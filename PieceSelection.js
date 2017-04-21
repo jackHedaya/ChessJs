@@ -106,22 +106,19 @@ function possibleKnight(board, y, x) {
   }
 
   if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x - 2)) {
-    if (isNotWhitePiece(board[y + 1][x - 2]))
-    {
+    if (isNotWhitePiece(board[y + 1][x - 2])) {
       possibleTiles[y + 1][x - 2] = 1;
     }
   }
 
   if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x - 2)) {
-    if (isNotWhitePiece(board[y - 1][x - 2]))
-    {
+    if (isNotWhitePiece(board[y - 1][x - 2])) {
       possibleTiles[y - 1][x - 2] = 1;
     }
   }
 
   if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x + 2)) {
-    if (isNotWhitePiece(board[y - 1][x + 2]))
-    {
+    if (isNotWhitePiece(board[y - 1][x + 2])) {
       possibleTiles[y - 1][x + 2] = 1;
     }
   }
@@ -164,80 +161,6 @@ function possiblePawn(board, y, x) {
 
 
 function possibleKing(board, y, x) {
-    var possibleTiles = [
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-      [0, 0, 0, 0, 0, 0, 0, 0],
-    ];
-
-    possibleTiles[y][x] = 2;
-
-    if (checkForAcceptableValue(y + 1)) {
-      if (isNotWhitePiece(board[y + 1][x]))
-      {
-        possibleTiles[y + 1][x] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x + 1)) {
-      if (isNotWhitePiece(board[y + 1][x + 1]))
-      {
-        possibleTiles[y + 1][x + 1] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x - 1)) {
-      if (isNotWhitePiece(board[y - 1][x - 1]))
-      {
-        possibleTiles[y - 1][x - 1] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(y - 1)) {
-      if (isNotWhitePiece(board[y - 1][x]))
-      {
-        possibleTiles[y - 1][x] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(x - 1)) {
-      if (isNotWhitePiece(board[y][x - 1]))
-      {
-        possibleTiles[y][x - 1] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(x + 1)) {
-      if (isNotWhitePiece(board[y][x + 1]))
-      {
-        possibleTiles[y][x + 1] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x - 1)) {
-      if (isNotWhitePiece(board[y + 1][x - 1]))
-      {
-        possibleTiles[y + 1][x - 1] = 1;
-      }
-    }
-
-    if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x + 1)) {
-      if (isNotWhitePiece(board[y - 1][x + 1]))
-      {
-        possibleTiles[y - 1][x + 1] = 1;
-      }
-    }
-
-    return possibleTiles;
-}
-
-function possibleBishop(board, y, x)
-{
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -251,132 +174,153 @@ function possibleBishop(board, y, x)
 
   possibleTiles[y][x] = 2;
 
-  if (y >= x)
-  {
-    for (var j = 0; j < x; j++)
-    {
-      var e1 = y - 1 - j;
-      var e2 = x - 1 - j;
-
-      print(e1);
-      print(e2);
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-
-    for (var j = 0; j < 7 - x; j++)
-    {
-      var e1 = y + 1 + j;
-      var e2 = x + 1 + j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-
-    for (var j = 0; j < x; j++)
-    {
-      var e1 = y + 1 + j;
-      var e2 = x - 1 - j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-
-    for (var j = 0; j < 7 - x; j++)
-    {
-      var e1 = y - 1 - j;
-      var e2 = x + 1 + j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-  } else if (y < x)
-  {
-    for (var j = 0; j < y; j++)
-    {
-      var e1 = y - 1 - j;
-      var e2 = x - 1 - j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-
-    for (var j = 0; j < 7 - y; j++)
-    {
-      var e1 = x + 1 + j;
-      var e2 = y + 1 + j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-
-    for (var j = 0; j < y; j++)
-    {
-      var e1 = x + 1 + j;
-      var e2 = y - 1 - j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
-    }
-
-    for (var j = 0; j < 7 - y; j++)
-    {
-      var e1 = x - 1 - j;
-      var e2 = y + 1 + j;
-
-      if (board[e1][e2] > 10) {
-        possibleTiles[e1][e2] = 1;
-        break
-      } else if (board[e1][e2] === 0) {
-        possibleTiles[e1][e2] = 1;
-      } else {
-        break;
-      }
+  if (checkForAcceptableValue(y + 1)) {
+    if (isNotWhitePiece(board[y + 1][x])) {
+      possibleTiles[y + 1][x] = 1;
     }
   }
 
+  if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x + 1)) {
+    if (isNotWhitePiece(board[y + 1][x + 1])) {
+      possibleTiles[y + 1][x + 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x - 1)) {
+    if (isNotWhitePiece(board[y - 1][x - 1])) {
+      possibleTiles[y - 1][x - 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y - 1)) {
+    if (isNotWhitePiece(board[y - 1][x])) {
+      possibleTiles[y - 1][x] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(x - 1)) {
+    if (isNotWhitePiece(board[y][x - 1])) {
+      possibleTiles[y][x - 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(x + 1)) {
+    if (isNotWhitePiece(board[y][x + 1])) {
+      possibleTiles[y][x + 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x - 1)) {
+    if (isNotWhitePiece(board[y + 1][x - 1])) {
+      possibleTiles[y + 1][x - 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x + 1)) {
+    if (isNotWhitePiece(board[y - 1][x + 1])) {
+      possibleTiles[y - 1][x + 1] = 1;
+    }
+  }
+
+  return possibleTiles;
+}
+
+function possibleBishop(board, y, x) {
+  var possibleTiles = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  possibleTiles[y][x] = 2;
+
+  var selNum = -1;
+
+  var yEqu = y + selNum;
+  var xEqu = x + selNum;
+
+  ex:
+    while (yEqu >= 0 && xEqu >= 0) {
+      if (board[yEqu][xEqu] > 10) {
+        possibleTiles[yEqu][xEqu] = 1;
+        break ex;
+      } else if (board[yEqu][xEqu] === 0) {
+        possibleTiles[yEqu][xEqu] = 1;
+      } else {
+        break ex;
+      }
+
+      selNum -= 1;
+      yEqu = y + selNum;
+      xEqu = x + selNum;
+    }
+
+  selNum = -1;
+
+  yEqu = y - selNum;
+  xEqu = x - selNum;
+
+  ex:
+    while (yEqu <= 7 && xEqu <= 7) {
+      if (board[yEqu][xEqu] > 10) {
+        possibleTiles[yEqu][xEqu] = 1;
+        break ex;
+      } else if (board[yEqu][xEqu] === 0) {
+        possibleTiles[yEqu][xEqu] = 1;
+      } else {
+        break ex;
+      }
+
+      selNum -= 1;
+      yEqu = y - selNum;
+      xEqu = x - selNum;
+    }
+
+    selNum = -1;
+
+    yEqu = y + selNum;
+    xEqu = x - selNum;
+
+    ex:
+      while (yEqu <= 7 && xEqu >= 0) {
+        if (board[yEqu][xEqu] > 10) {
+          possibleTiles[yEqu][xEqu] = 1;
+          break ex;
+        } else if (board[yEqu][xEqu] === 0) {
+          possibleTiles[yEqu][xEqu] = 1;
+        } else {
+          break ex;
+        }
+
+        selNum -= 1;
+        yEqu = y + selNum;
+        xEqu = x - selNum;
+      }
+
+      selNum = -1;
+
+      yEqu = y - selNum;
+      xEqu = x + selNum;
+
+    ex:
+      while (yEqu >= 0 && xEqu <= 7) {
+        if (board[yEqu][xEqu] > 10) {
+          possibleTiles[yEqu][xEqu] = 1;
+          break ex;
+        } else if (board[yEqu][xEqu] === 0) {
+          possibleTiles[yEqu][xEqu] = 1;
+        } else {
+          break ex;
+        }
+
+        selNum -= 1;
+        yEqu = y - selNum;
+        xEqu = x + selNum;
+      }
   return possibleTiles;
 }

@@ -4,7 +4,7 @@
  * [compareColors Compares two colors by checking if their RGB values are the same.]
  * @param  {color} color1 [The first color, will be compared with color2.]
  * @param  {color} color2 [The second color, will be compared with color1.]
- * @return {Boolean}        [Will return whether or not the two colors are the same.]
+ * @return {boolean}        [Will return whether or not the two colors are the same.]
  */
 
 function compareColors(color1, color2) {
@@ -62,4 +62,23 @@ function whatPosition(j, arr)
   }
 
   return null;
+}
+
+/**
+ * [printArray Prints array, arr, sequentially.]
+ * @param  {Array} arr [Prints arr.]
+ * @return {null}     [Returns nothing.]
+ */
+
+function printArray(arr)
+{
+  for (x in arr)
+  {
+    if (x.constructor === Array)
+    {
+      printArray(x);
+    } else {
+      print(x);
+    }
+  }
 }
