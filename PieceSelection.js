@@ -235,3 +235,148 @@ function possibleKing(board, y, x) {
 
     return possibleTiles;
 }
+
+function possibleBishop(board, y, x)
+{
+  var possibleTiles = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  possibleTiles[y][x] = 2;
+
+  if (y >= x)
+  {
+    for (var j = 0; j < x; j++)
+    {
+      var e1 = y - 1 - j;
+      var e2 = x - 1 - j;
+
+      print(e1);
+      print(e2);
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+
+    for (var j = 0; j < 7 - x; j++)
+    {
+      var e1 = y + 1 + j;
+      var e2 = x + 1 + j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+
+    for (var j = 0; j < x; j++)
+    {
+      var e1 = y + 1 + j;
+      var e2 = x - 1 - j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+
+    for (var j = 0; j < 7 - x; j++)
+    {
+      var e1 = y - 1 - j;
+      var e2 = x + 1 + j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+  } else if (y < x)
+  {
+    for (var j = 0; j < y; j++)
+    {
+      var e1 = y - 1 - j;
+      var e2 = x - 1 - j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+
+    for (var j = 0; j < 7 - y; j++)
+    {
+      var e1 = x + 1 + j;
+      var e2 = y + 1 + j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+
+    for (var j = 0; j < y; j++)
+    {
+      var e1 = x + 1 + j;
+      var e2 = y - 1 - j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+
+    for (var j = 0; j < 7 - y; j++)
+    {
+      var e1 = x - 1 - j;
+      var e2 = y + 1 + j;
+
+      if (board[e1][e2] > 10) {
+        possibleTiles[e1][e2] = 1;
+        break
+      } else if (board[e1][e2] === 0) {
+        possibleTiles[e1][e2] = 1;
+      } else {
+        break;
+      }
+    }
+  }
+
+  return possibleTiles;
+}
