@@ -157,7 +157,7 @@ function mouseClicked() {
       selected = possibleKing(board, position.y, position.x);
       break;
     default:
-      print("Incomplete");
+      print("Coming soon...!");
       break
   }
 
