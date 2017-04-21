@@ -146,16 +146,19 @@ function mouseClicked() {
   switch (board[position.y][position.x]) {
     case 1:
       selected = possiblePawn(board, position.y, position.x);
-      break
+      break;
     case 2:
       selected = possibleRook(board, position.y, position.x);
-      break
+      break;
     case 3:
       selected = possibleKnight(board, position.y, position.x);
-      break
+      break;
+    case 6:
+      selected = possibleKing(board, position.y, position.x);
+      break;
     default:
       print("Incomplete");
-      break
+      break;
   }
 
   drawAll();
@@ -208,27 +211,27 @@ function drawPieces() {
         case 1:
         case 11:
           image(images.pawn, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
-          break
+          break;
         case 2:
         case 12:
           image(images.rook, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
-          break
+          break;
         case 3:
         case 13:
           image(images.knight, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
-          break
+          break;
         case 4:
         case 14:
           image(images.bishop, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
-          break
+          break;
         case 5:
         case 15:
           image(images.queen, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
-          break
+          break;
         case 6:
         case 16:
           image(images.king, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
-          break
+          break;
       }
     }
   }
