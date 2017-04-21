@@ -33,8 +33,8 @@ function isNotWhitePiece(pos) {
 
 /**
  * [checkForAcceptableValue Checks if Integer, x, is out of bounds (x > 7).]
- * @param  {Integer} x [The position that will be checked for over 7.]
- * @return {Boolean}   [Whether or not Integer, x, is less than 7.]
+ * @param  {int} x [The position that will be checked for over 7.]
+ * @return {boolean}   [Whether or not Integer, x, is less than 7.]
  */
 
 function checkForAcceptableValue(x)
@@ -43,14 +43,23 @@ function checkForAcceptableValue(x)
 }
 
 /**
- * [overrideMove Takes the piece at the start position and overrides the piece at the end position. The piece is removed from the start position.]
- * @param  {[type]} board [description]
- * @param  {Move} start [Use the variable 'move' to set a start.]
- * @param  {Move} end   [Use the variable 'move' to set a start.]
- * @return {int[]}       [Returns the new board with the moved piece.]
+ * [whatPosition Finds the position of x in arr.]
+ * @param  {int} x   [The value that will be searched for.]
+ * @param  {[type]} arr [The array that will be searched.]
+ * @return {Position}     [The position in array, arr, of x]
  */
-
-function rm(y, x)
+function whatPosition(j, arr)
 {
-  board[y][x] = 0;
+  for (var y = 0; y < arr.length; y++)
+  {
+    for (var x = 0; x < arr[y].length; x++)
+    {
+      if (arr[y][x] === j)
+      {
+        return new Position(y, x);
+      }
+    }
+  }
+
+  return null;
 }

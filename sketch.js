@@ -75,15 +75,15 @@ var selected = [
   [0, 0, 0, 0, 0, 0, 0, 0],
 ];
 
-var subtracting = [
-  [1, 2, 3, 4, 5, 6, 7, 8],
-  [9, 10, 11, 12, 13, 14, 15, 16],
-  [17, 18, 19, 20, 21, 22, 23, 24],
-  [25, 26, 27, 28, 29, 30, 31, 32],
-  [33, 34, 35, 36, 37, 38, 39, 40],
-  [41, 42, 43, 44, 45, 46, 47, 48],
-  [49, 50, 51, 52, 53, 54, 55, 56],
-  [57, 58, 59, 60, 61, 62, 63, 64],
+var subtractColor = [
+  [0, 1, 2, 3, 4, 5, 6, 7],
+  [8, 9, 10, 11, 12, 13, 14, 15],
+  [16, 17, 18, 19, 20, 21, 22, 23],
+  [24, 25, 26, 27, 28, 29, 30, 31],
+  [32, 33, 34, 35, 36, 37, 38, 39],
+  [40, 41, 42, 43, 44, 45, 46, 47],
+  [48, 49, 50, 51, 52, 53, 54, 55],
+  [56, 57, 58, 59, 60, 61, 62, 63],
 ];
 
 function preload() {
@@ -122,38 +122,53 @@ function mouseClicked() {
     Color: color(get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
   }
 
-  let countObj = 0;
-
-  let position = {};
+  var position = null;
 
   external:
     for (var i = 0; i < board.length; i++) {
       for (var j = 0; j < board[i].length; j++) {
-        let posColor1 = color(119 - countObj, 136 - countObj, 153 - countObj);
-        let posColor2 = color(105 - countObj, 105 - countObj, 105 - countObj);
-
+        let posColor1 = color(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
+        let posColor2 = color(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
+        let posColor3 = color(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
 
         if ((compareColors(pixelColor.Color, posColor1)) || (compareColors(pixelColor.Color, posColor2))) {
-          position.y = j;
-          position.x = i;
+          position = new Position(j, i);
+
           print("(" + position.y + ', ' + position.x + ")");
+
           break external;
         } else if (compareColors(pixelColor.Color, color(255, 127, 80))) {
           selected = defaults.selected;
+
+          drawAll();
+          return;
+        } else if (compareColors(pixelColor.Color, posColor3))
+        {
+          position = new Position(j, i);
+          print("(" + position.y + ', ' + position.x + ")");
+
+          var spawnPos = whatPosition(2, selected);
+
+          board[position.y][position.x] = board[spawnPos.y][spawnPos.x];
+          board[spawnPos.y][spawnPos.x] = 0;
+
+          selected = defaults.selected;
+
           drawAll();
           return;
         }
-
-        countObj++;
       }
     }
 
-  if (objectIsEmpty(position)) {
+  if (position === null) {
     console.error("Position not detected");
     return;
   }
 
   switch (board[position.y][position.x]) {
+    case 0:
+      selected = defaults.selected;
+      break;
     case 1:
       selected = possiblePawn(board, position.y, position.x);
       break;
@@ -170,7 +185,7 @@ function mouseClicked() {
       selected = possibleKing(board, position.y, position.x);
       break;
     default:
-      print("Incomplete");
+      print("Incomplete: " + board[position.y][position.x]);
       break;
   }
 
@@ -180,21 +195,19 @@ function mouseClicked() {
 function drawBoard(selected) {
   let isWhiteT = true;
 
-  let subAmount = 0;
-
   for (var i = 0; i < selected.length; i++) {
     for (var j = 0; j < selected[i].length; j++) {
       if (isWhiteT) {
-        fill(119 - subAmount, 136 - subAmount, 153 - subAmount);
+        fill(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
       } else {
-        fill(105 - subAmount, 105 - subAmount, 105 - subAmount);
+        fill(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
       }
 
       if (selected[j][i] === 1) {
         if (board[j][i] > 10) {
-          fill(255, 38, 49);
+          fill(255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
         } else {
-          fill(240, 230, 140);
+          fill(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
         }
       } else if (selected[j][i] === 2) {
         fill(255, 127, 80);
@@ -202,8 +215,6 @@ function drawBoard(selected) {
 
       rect(finalSizeW + tileSize * i, j * tileSize, tileSize, tileSize);
       isWhiteT = !isWhiteT;
-
-      subAmount += 1;
     }
 
     isWhiteT = !isWhiteT;
