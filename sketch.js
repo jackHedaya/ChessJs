@@ -57,7 +57,7 @@ var board = [
   [12, 13, 14, 15, 16, 14, 13, 12],
   [11, 11, 11, 11, 11, 11, 11, 11],
   [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 3, 0, 0, 0],
+  [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [0, 0, 0, 0, 0, 0, 0, 0],
   [1, 1, 1, 1, 1, 1, 1, 1],
@@ -152,7 +152,10 @@ function mouseClicked() {
       break
     case 3:
       selected = possibleKnight(board, position.y, position.x);
-      break
+      break;
+    case 6:
+      selected = possibleKing(board, position.y, position.x);
+      break;
     default:
       print("Incomplete");
       break

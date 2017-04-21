@@ -43,5 +43,5 @@ function isNotWhitePiece(pos) {
 
 function checkForAcceptableValue(x)
 {
-  return x <= 7;
+  return x < 8;
 }
