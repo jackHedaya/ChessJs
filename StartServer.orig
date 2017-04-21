@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd ~/Dropbox/Development/Websites/Chess
+http-server -c-1

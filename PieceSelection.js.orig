@@ -159,9 +159,85 @@ function possiblePawn(board, y, x) {
     possibleTiles[y - 1][x + 1] = 1;
   }
 
+<<<<<<< HEAD
   return possibleTiles
 }
 
+function possibleKing(board, y, x)
+{
+  var possibleTiles = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  possibleTiles[y][x] = 2;
+
+  if (checkForAcceptableValue(y + 1)) {
+    if (isNotWhitePiece(board[y + 1][x]))
+    {
+      possibleTiles[y + 1][x] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x + 1)) {
+    if (isNotWhitePiece(board[y + 1][x + 1]))
+    {
+      possibleTiles[y + 1][x + 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x - 1)) {
+    if (isNotWhitePiece(board[y - 1][x - 1]))
+    {
+      possibleTiles[y - 1][x - 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y - 1)) {
+    if (isNotWhitePiece(board[y - 1][x]))
+    {
+      possibleTiles[y - 1][x] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(x - 1)) {
+    if (isNotWhitePiece(board[y][x - 1]))
+    {
+      possibleTiles[y][x - 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(x + 1)) {
+    if (isNotWhitePiece(board[y][x + 1]))
+    {
+      possibleTiles[y][x + 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y + 1) && checkForAcceptableValue(x - 1)) {
+    if (isNotWhitePiece(board[y + 1][x - 1]))
+    {
+      possibleTiles[y + 1][x - 1] = 1;
+    }
+  }
+
+  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x + 1)) {
+    if (isNotWhitePiece(board[y - 1][x + 1]))
+    {
+      possibleTiles[y - 1][x + 1] = 1;
+    }
+  }
+
+  return possibleTiles;
+=======
+
 
   return possibleTiles
+>>>>>>> e0f965c8cd0d0c49678510690b7195a33cf82b54
 }
