@@ -163,8 +163,7 @@ function possiblePawn(board, y, x) {
 }
 
 
-  return possibleTilesfunction possibleKing(board, y, x)
-  {
+function possibleKing(board, y, x) {
     var possibleTiles = [
       [0, 0, 0, 0, 0, 0, 0, 0],
       [0, 0, 0, 0, 0, 0, 0, 0],
