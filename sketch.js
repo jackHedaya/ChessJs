@@ -116,27 +116,26 @@ function mouseClicked() {
   let position = {};
 
   external:
-  for (var i = 0; i < board.length; i++) {
-    for (var j = 0; j < board[i].length; j++) {
-      let posColor1 = color(119 - countObj, 136 - countObj, 153 - countObj);
-      let posColor2 = color(105 - countObj, 105 - countObj, 105 - countObj);
+    for (var i = 0; i < board.length; i++) {
+      for (var j = 0; j < board[i].length; j++) {
+        let posColor1 = color(119 - countObj, 136 - countObj, 153 - countObj);
+        let posColor2 = color(105 - countObj, 105 - countObj, 105 - countObj);
 
 
-      if ((compareColors(pixelColor.Color, posColor1)) || (compareColors(pixelColor.Color, posColor2))) {
-        position.y = j;
-        position.x = i;
-        print("(" + position.y + ', ' + position.x + ")");
-        break external;
-      } else if (compareColors(pixelColor.Color, color(255, 127, 80)))
-      {
-        selected = defaults.selected;
-        drawAll();
-        return;
+        if ((compareColors(pixelColor.Color, posColor1)) || (compareColors(pixelColor.Color, posColor2))) {
+          position.y = j;
+          position.x = i;
+          print("(" + position.y + ', ' + position.x + ")");
+          break external;
+        } else if (compareColors(pixelColor.Color, color(255, 127, 80))) {
+          selected = defaults.selected;
+          drawAll();
+          return;
+        }
+
+        countObj++;
       }
-
-      countObj++;
     }
-  }
 
   if (objectIsEmpty(position)) {
     console.error("Position not detected");
@@ -178,8 +177,7 @@ function drawBoard(selected) {
       }
 
       if (selected[j][i] === 1) {
-        if (board[j][i] > 10)
-        {
+        if (board[j][i] > 10) {
           fill(255, 38, 49);
         } else {
           fill(240, 230, 140);
