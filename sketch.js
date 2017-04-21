@@ -53,27 +53,9 @@ var defaults = {
   ]
 }
 
-var board = [
-  [12, 13, 14, 15, 16, 14, 13, 12],
-  [11, 11, 11, 11, 11, 11, 11, 11],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 4, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [1, 1, 1, 1, 1, 1, 1, 1],
-  [2, 3, 4, 5, 6, 4, 3, 2],
-];
+var board = defaults.board;
 
-var selected = [
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0],
-];
+var selected = defaults.selected;
 
 var subtractColor = [
   [0, 1, 2, 3, 4, 5, 6, 7],
@@ -153,7 +135,6 @@ function mouseClicked() {
           board[spawnPos.y][spawnPos.x] = 0;
 
           selected = defaults.selected;
-
           drawAll();
           return;
         }
@@ -180,6 +161,9 @@ function mouseClicked() {
       break;
     case 4:
       selected = possibleBishop(board, position.y, position.x);
+      break;
+    case 5:
+      selected = possibleQueen(board, position.y, position.x);
       break;
     case 6:
       selected = possibleKing(board, position.y, position.x);

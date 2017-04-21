@@ -82,3 +82,28 @@ function printArray(arr)
     }
   }
 }
+
+/**
+ * [combineBoards Will combine two (selected) boards into one.]
+ * @param  {int[][]} board1 [The first board that will be combined with board2.]
+ * @param  {int[][]} board2 [The second board that will be combined with board1.]
+ * @return {int[][]}        [Both boards combined into one board.]
+ */
+
+function combineBoards(board1, board2)
+{
+  var returnBoard = board1;
+
+  for (var y = 0; y < returnBoard.length; y++)
+  {
+    for (var x = 0; x < returnBoard[y].length; x++)
+    {
+      if (board2[y][x] > returnBoard[y][x])
+      {
+        returnBoard[y][x] = board2[y][x];
+      }
+    }
+  }
+
+  return returnBoard;
+}

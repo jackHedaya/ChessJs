@@ -159,7 +159,6 @@ function possiblePawn(board, y, x) {
   return possibleTiles
 }
 
-
 function possibleKing(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -281,34 +280,35 @@ function possibleBishop(board, y, x) {
       xEqu = x - selNum;
     }
 
-    selNum = -1;
+  selNum = -1;
 
-    yEqu = y + selNum;
-    xEqu = x - selNum;
+  yEqu = y + selNum;
+  xEqu = x - selNum;
 
-    ex:
-      while (yEqu <= 7 && xEqu >= 0) {
-        if (board[yEqu][xEqu] > 10) {
-          possibleTiles[yEqu][xEqu] = 1;
-          break ex;
-        } else if (board[yEqu][xEqu] === 0) {
-          possibleTiles[yEqu][xEqu] = 1;
-        } else {
-          break ex;
-        }
-
-        selNum -= 1;
-        yEqu = y + selNum;
-        xEqu = x - selNum;
+  ex:
+    while (yEqu <= 7 && xEqu >= 0) {
+      if (board[yEqu][xEqu] > 10) {
+        possibleTiles[yEqu][xEqu] = 1;
+        break ex;
+      } else if (board[yEqu][xEqu] === 0) {
+        possibleTiles[yEqu][xEqu] = 1;
+      } else {
+        break ex;
       }
 
-      selNum = -1;
+      selNum -= 1;
+      yEqu = y + selNum;
+      xEqu = x - selNum;
+    }
 
-      yEqu = y - selNum;
-      xEqu = x + selNum;
+    selNum = -1;
+
+    yEqu = y - selNum;
+    xEqu = x + selNum;
 
     ex:
-      while (yEqu >= 0 && xEqu <= 7) {
+      while(yEqu <= 7 && xEqu >= 0)
+      {
         if (board[yEqu][xEqu] > 10) {
           possibleTiles[yEqu][xEqu] = 1;
           break ex;
@@ -322,5 +322,28 @@ function possibleBishop(board, y, x) {
         yEqu = y - selNum;
         xEqu = x + selNum;
       }
+
+  return possibleTiles;
+}
+
+function possibleQueen(board, y, x) {
+  var possibleTiles = [
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 0, 0, 0],
+  ];
+
+  var posBishop = possibleBishop(board, y, x);
+  var posRook = possibleRook(board, y, x);
+
+  var possibleTiles = combineBoards(posBishop, posRook);
+
+  possibleTiles[y][x] = 2;
+
   return possibleTiles;
 }
