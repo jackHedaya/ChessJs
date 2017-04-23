@@ -109,7 +109,7 @@ function combineBoards(board1, board2)
 }
 
 /**
- * [sleep halts the function for ms milliseconds.]
+ * [sleep Halts the function for ms milliseconds.]
  * @param  {[type]} ms [The amount of time that the function will be halted for.]
  * @return {null}    [Returns nothing.]
  */
