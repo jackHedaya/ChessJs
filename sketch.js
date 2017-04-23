@@ -70,6 +70,11 @@ var subtractColor = [
   [56, 57, 58, 59, 60, 61, 62, 63],
 ];
 
+var killedPieces = {
+  white: [],
+  black: []
+}
+
 var movement = {}
 
 function preload () {
@@ -99,6 +104,7 @@ function draw () {}
 
 async function mouseClicked () {
   if (movement.oLocX) {return;}
+  if (mouseX < finalSizeW || mouseX > finalSizeW + tileSize * 8) {return;}
 
   var pixelColor = {
     red: get (mouseX, mouseY)[0],
@@ -117,6 +123,7 @@ async function mouseClicked () {
         let posColor3 = color (240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
         let posColor4 = color (20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
         let posColor5 = color (255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
+        let posColor6 = color (255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
 
         if ((compareColors (pixelColor.color, posColor1)) || (compareColors (pixelColor.color, posColor2))) {
           position = new Position (j, i);
@@ -169,6 +176,33 @@ async function mouseClicked () {
 
             break external;
           }
+        } else if (compareColors (pixelColor.color, posColor6))
+        {
+          position = new Position (j, i);
+
+          var startPos = whatPosition (2, selected);
+
+          calcMov (startPos, position);
+
+          selected = defaults.selected;
+
+          killedPieces.black.push(board[position.y][position.x]);
+
+          for (var i = 0; i < jagged; i++) {
+
+            drawAll ();
+
+            await sleep (1);
+          }
+
+          board[position.y][position.x] = board[startPos.y][startPos.x];
+          board[startPos.y][startPos.x] = 0;
+
+          delete movement.oLocX;
+          delete movement.oLocY;
+
+          drawAll ();
+          return;
         }
       }
     }
@@ -311,7 +345,74 @@ function drawPieces() {
   }
 }
 
+function drawKilled ()
+{
+  for (var i = 0; i < killedPieces.white.length; i++)
+  {
+    var size = finalSizeW / 2;
+
+    var equX = size * (i % 2);
+    var equY = size * (i / 2);
+
+    tint (255 - i, 255 - i, 255 - i);
+
+    switch (killedPieces.white[i]) {
+      case 1:
+        image (images.pawn, equX, equY, size, size);
+        break;
+      case 2:
+        image (images.rook, equX, equY, size, size);
+        break;
+      case 3:
+        image (images.knight, equX, equY, size, size);
+        break;
+      case 4:
+        image (images.bishop, equX, equY, size, size);
+        break;
+      case 5:
+        image (images.queen, equX, equY, size, size);
+        break;
+      case 6:
+        image (images.king, equX, equY, size, size);
+        break;
+    }
+  }
+
+  for (var i = 0; i < killedPieces.black.length; i++)
+  {
+    var size = finalSizeW / 2;
+
+    var equX = finalSizeW + tileSize * 8 + size * (i % 2);
+    var equY = size * (i / 2);
+
+
+    tint (20 + i, 20 + i, 20 + i);
+
+    switch (killedPieces.black[i]) {
+      case 11:
+        image (images.pawn, equX, equY, size, size);
+        break;
+      case 12:
+        image (images.rook, equX, equY, size, size);
+        break;
+      case 13:
+        image (images.knight, equX, equY, size, size);
+        break;
+      case 14:
+        image (images.bishop, equX, equY, size, size);
+        break;
+      case 15:
+        image (images.queen, equX, equY, size, size);
+        break;
+      case 16:
+        image (images.king, equX, equY, size, size);
+        break;
+    }
+  }
+}
+
 function drawAll () {
   drawBoard (selected);
   drawPieces ();
+  drawKilled ();
 }
