@@ -10,7 +10,7 @@ var images = {};
 
 var tileSize;
 
-var jagged = 10;
+var jagged = 15;
 
 const Pieces = {
   White: {
@@ -101,11 +101,13 @@ async function mouseClicked() {
   if (movement.oLocX) {return;}
 
   var pixelColor = {
-    Red: get(mouseX, mouseY)[0],
-    Green: get(mouseX, mouseY)[1],
+    red: get(mouseX, mouseY)[0],
+    green: get(mouseX, mouseY)[1],
     Blue: get(mouseX, mouseY)[2],
-    Color: color(get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
+    color: color(get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
   }
+
+  print(get(mouseX, mouseY));
 
   var position = null;
 
@@ -115,25 +117,30 @@ async function mouseClicked() {
         let posColor1 = color(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
         let posColor2 = color(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
         let posColor3 = color(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
+        let posColor4 = color(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
+        let posColor5 = color(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
 
-        if ((compareColors(pixelColor.Color, posColor1)) || (compareColors(pixelColor.Color, posColor2))) {
+        if ((compareColors(pixelColor.color, posColor1)) || (compareColors(pixelColor.color, posColor2))) {
           position = new Position(j, i);
 
           print("(" + position.y + ', ' + position.x + ")");
 
           break external;
-        } else if (compareColors(pixelColor.Color, color(255, 127, 80))) {
+        } else if (compareColors(pixelColor.color, color(255, 127, 80))) {
           selected = defaults.selected;
 
           drawAll();
           return;
-        } else if (compareColors(pixelColor.Color, posColor3)) {
+        } else if (compareColors(pixelColor.color, posColor3)) {
           position = new Position(j, i);
           print("(" + position.y + ', ' + position.x + ")");
 
           var startPos = whatPosition(2, selected);
 
           calcMov(startPos, position);
+
+          selected = defaults.selected;
+
           for (var i = 0; i < jagged; i++) {
 
             drawAll();
@@ -147,15 +154,31 @@ async function mouseClicked() {
           delete movement.oLocX;
           delete movement.oLocY;
 
-          selected = defaults.selected;
           drawAll();
           return;
+        } else if (compareColors(pixelColor.color, posColor5))
+        {
+          print(selected[i][j]);
+          if (selected[i][j] === 2)
+          {
+            selected = defaults.selected;
+            drawAll();
+            return;
+          } else
+          {
+            position = new Position(i, j);
+
+            print("(" + position.y + ', ' + position.x + ")");
+
+            break external;
+          }
         }
       }
     }
 
   if (position === null) {
     console.error("Position not detected");
+    print(pixelColor.Red);
     return;
   }
 
@@ -182,7 +205,7 @@ async function mouseClicked() {
       selected = possibleKing(board, position.y, position.x);
       break;
     default:
-      print("Huh?! Are you some form of extraterrestrial chess piece? Mr, " + board[position.y][position.x]);
+      print("Huh?! Are you some form of extraterrestrial chess piece? Mr. " + board[position.y][position.x]);
       break;
   }
 
@@ -246,16 +269,14 @@ function drawPieces() {
       }
 
       if (isNotWhitePiece(board[i][j])) {
-        tint(20, 20, 20);
+        tint(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
       } else if (board[i][j] > 0) {
-        tint(255, 255, 255);
+        tint(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
       }
-
 
       if (i === movement.oLocY && j === movement.oLocX) {
         adder.x = movement.x;
         adder.y = movement.y;
-        print(adder.x + "," + adder.y);
 
         movement.x += movement.oX;
         movement.y += movement.oY;
