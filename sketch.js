@@ -10,6 +10,8 @@ var images = {};
 
 var tileSize;
 
+var jagged = 10;
+
 const Pieces = {
   White: {
     Pawn: 1,
@@ -68,12 +70,7 @@ var subtractColor = [
   [56, 57, 58, 59, 60, 61, 62, 63],
 ];
 
-var movement = {
-  x: 0,
-  y: 0,
-  locY: null,
-  locX: null
-}
+var movement = {}
 
 function preload() {
   images.pawn = loadImage("assets/pieces/Pawn.png");
@@ -100,7 +97,9 @@ function setup() {
 
 function draw() {}
 
-function mouseClicked() {
+async function mouseClicked() {
+  if (movement.oLocX) {return;}
+
   var pixelColor = {
     Red: get(mouseX, mouseY)[0],
     Green: get(mouseX, mouseY)[1],
@@ -128,15 +127,25 @@ function mouseClicked() {
 
           drawAll();
           return;
-        } else if (compareColors(pixelColor.Color, posColor3))
-        {
+        } else if (compareColors(pixelColor.Color, posColor3)) {
           position = new Position(j, i);
           print("(" + position.y + ', ' + position.x + ")");
 
-          var spawnPos = whatPosition(2, selected);
+          var startPos = whatPosition(2, selected);
 
-          board[position.y][position.x] = board[spawnPos.y][spawnPos.x];
-          board[spawnPos.y][spawnPos.x] = 0;
+          calcMov(startPos, position);
+          for (var i = 0; i < jagged; i++) {
+
+            drawAll();
+
+            await sleep(1);
+          }
+
+          board[position.y][position.x] = board[startPos.y][startPos.x];
+          board[startPos.y][startPos.x] = 0;
+
+          delete movement.oLocX;
+          delete movement.oLocY;
 
           selected = defaults.selected;
           drawAll();
@@ -180,9 +189,22 @@ function mouseClicked() {
   drawAll();
 }
 
-function calcMov(start, end)
-{
-    
+function calcMov(start, end) {
+
+  var changingY = (end.y - start.y) * tileSize;
+  var changingX = (end.x - start.x) * tileSize;
+
+  var pixJumpX = changingX / jagged;
+  var pixJumpY = changingY / jagged;
+
+  movement.oX = pixJumpX;
+  movement.oY = pixJumpY;
+
+  movement.oLocX = start.x;
+  movement.oLocY = start.y;
+
+  movement.x = movement.oX;
+  movement.y = movement.oY;
 }
 
 function drawBoard(selected) {
@@ -229,10 +251,14 @@ function drawPieces() {
         tint(255, 255, 255);
       }
 
-      if (i === movement.locY && j === movement.locX)
-      {
+
+      if (i === movement.oLocY && j === movement.oLocX) {
         adder.x = movement.x;
         adder.y = movement.y;
+        print(adder.x + "," + adder.y);
+
+        movement.x += movement.oX;
+        movement.y += movement.oY;
       }
 
       var equX = finalSizeW + tileSize * j + adder.x;
