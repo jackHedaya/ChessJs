@@ -107,3 +107,13 @@ function combineBoards(board1, board2)
 
   return returnBoard;
 }
+
+/**
+ * [sleep halts the function for ms milliseconds.]
+ * @param  {[type]} ms [The amount of time that the function will be halted for.]
+ * @return {null}    [Returns nothing.]
+ */
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
