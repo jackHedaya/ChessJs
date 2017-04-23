@@ -1,6 +1,6 @@
 // Copyright Jack Hedaya (c) 2017 Copyright Holder All Rights Reserved.
 
-function possibleRook (board, y, x) {
+function possibleRook(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -61,7 +61,7 @@ function possibleRook (board, y, x) {
   return possibleTiles;
 }
 
-function possibleKnight (board, y, x) {
+function possibleKnight(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -126,7 +126,7 @@ function possibleKnight (board, y, x) {
   return possibleTiles;
 }
 
-function possiblePawn (board, y, x) {
+function possiblePawn(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -159,7 +159,7 @@ function possiblePawn (board, y, x) {
   return possibleTiles
 }
 
-function possibleKing (board, y, x) {
+function possibleKing(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -224,7 +224,7 @@ function possibleKing (board, y, x) {
   return possibleTiles;
 }
 
-function possibleBishop (board, y, x) {
+function possibleBishop(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
@@ -286,7 +286,8 @@ function possibleBishop (board, y, x) {
   xEqu = x - selNum;
 
   ex:
-    while (yEqu <= 7 && xEqu >= 0) {
+    while (yEqu >= 0 && yEqu <= 7 && xEqu >= 0) {
+      print(yEqu);
       if (board[yEqu][xEqu] > 10) {
         possibleTiles[yEqu][xEqu] = 1;
         break ex;
@@ -326,7 +327,7 @@ function possibleBishop (board, y, x) {
   return possibleTiles;
 }
 
-function possibleQueen (board, y, x) {
+function possibleQueen(board, y, x) {
   var possibleTiles = [
     [0, 0, 0, 0, 0, 0, 0, 0],
     [0, 0, 0, 0, 0, 0, 0, 0],
