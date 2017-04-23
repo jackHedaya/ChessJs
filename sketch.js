@@ -107,8 +107,6 @@ async function mouseClicked() {
     color: color(get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
   }
 
-  print(get(mouseX, mouseY));
-
   var position = null;
 
   external:
@@ -158,7 +156,6 @@ async function mouseClicked() {
           return;
         } else if (compareColors(pixelColor.color, posColor5))
         {
-          print(selected[i][j]);
           if (selected[i][j] === 2)
           {
             selected = defaults.selected;
@@ -178,7 +175,6 @@ async function mouseClicked() {
 
   if (position === null) {
     console.error("Position not detected");
-    print(pixelColor.Red);
     return;
   }
 
