@@ -12,6 +12,10 @@ var tileSize;
 
 var jagged = 15;
 
+let swPawn = {
+  sel: false
+}
+
 const Pieces = {
   White: {
     Pawn: 1,
@@ -77,80 +81,131 @@ var killedPieces = {
 
 var movement = {}
 
-function preload () {
-  images.pawn = loadImage ("assets/pieces/Pawn.png");
-  images.rook = loadImage ("assets/pieces/Rook.png");
-  images.bishop = loadImage ("assets/pieces/Bishop.png");
-  images.knight = loadImage ("assets/pieces/Knight.png");
-  images.king = loadImage ("assets/pieces/King.png");
-  images.queen = loadImage ("assets/pieces/Queen.png");
+function preload() {
+  images.pawn = loadImage("assets/pieces/Pawn.png");
+  images.rook = loadImage("assets/pieces/Rook.png");
+  images.bishop = loadImage("assets/pieces/Bishop.png");
+  images.knight = loadImage("assets/pieces/Knight.png");
+  images.king = loadImage("assets/pieces/King.png");
+  images.queen = loadImage("assets/pieces/Queen.png");
 }
 
-function setup () {
-  var cnv = createCanvas (windowWidth, windowHeight);
+function setup() {
+  var cnv = createCanvas(windowWidth, windowHeight);
 
-  fill ('#C7D3FF');
-  rect (0, 0, cnv.width, cnv.height);
+  fill('#C7D3FF');
+  rect(0, 0, cnv.width, cnv.height);
 
   finalSizeW = (cnv.width - cnv.height) / 2;
   finalSizeH = cnv.height;
 
   tileSize = finalSizeH / 8;
 
-  drawAll ();
+  drawAll();
 }
 
-function draw () {}
+function draw() {}
 
-async function mouseClicked () {
-  if (movement.oLocX) {return;}
-  if (mouseX < finalSizeW || mouseX > finalSizeW + tileSize * 8) {return;}
+async function mouseClicked() {
+  if (movement.oLocX) {
+    return;
+  }
+  if (mouseX < finalSizeW || mouseX > finalSizeW + tileSize * 8) {
+    return;
+  }
 
   var pixelColor = {
-    red: get (mouseX, mouseY)[0],
-    green: get (mouseX, mouseY)[1],
-    Blue: get (mouseX, mouseY)[2],
-    color: color (get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
+    red: get(mouseX, mouseY)[0],
+    green: get(mouseX, mouseY)[1],
+    Blue: get(mouseX, mouseY)[2],
+    color: color(get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
   }
 
   var position = null;
 
+  if (swPawn.sel) {
+    if (compareColors (pixelColor.color,  color (255, 255, 255)))
+    {
+      board[swPawn.y][swPawn.x] = Pieces.White.Queen;
+
+      swPawn.sel = false;
+      delete swPawn.y;
+      delete swPawn.x;
+
+      drawAll();
+      return;
+    } else if (compareColors (pixelColor.color,  color (254, 254, 254)))
+    {
+      board[swPawn.y][swPawn.x] = Pieces.White.Bishop;
+
+      swPawn.sel = false;
+      delete swPawn.y;
+      delete swPawn.x;
+
+      drawAll();
+      return;
+    } else if (compareColors (pixelColor.color,  color (253, 253, 253)))
+    {
+      board[swPawn.y][swPawn.x] = Pieces.White.Knight;
+
+      swPawn.sel = false;
+      delete swPawn.y;
+      delete swPawn.x;
+
+      drawAll();
+      return;
+    } else if (compareColors (pixelColor.color,  color (252, 252, 252)))
+    {
+      board[swPawn.y][swPawn.x] = Pieces.White.Rook;
+
+      swPawn.sel = false;
+      delete swPawn.y;
+      delete swPawn.x;
+
+      drawAll();
+      return;
+    } else {
+      return;
+    }
+  }
+
   external:
     for (var i = 0; i < board.length; i++) {
       for (var j = 0; j < board[i].length; j++) {
-        let posColor1 = color (119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
-        let posColor2 = color (105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
-        let posColor3 = color (240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
-        let posColor4 = color (20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
-        let posColor5 = color (255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
-        let posColor6 = color (255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
+        let posColor1 = color(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
+        let posColor2 = color(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
+        let posColor3 = color(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
+        let posColor4 = color(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
+        let posColor5 = color(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
+        let posColor6 = color(255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
+        let posColor7 = color(86 - subtractColor[j][i], 255 - subtractColor[j][i], 151 - subtractColor[j][i]);
 
-        if ((compareColors (pixelColor.color, posColor1)) || (compareColors (pixelColor.color, posColor2))) {
-          position = new Position (j, i);
+        if ((compareColors(pixelColor.color, posColor1)) || (compareColors(pixelColor.color, posColor2))) {
+          position = new Position(j, i);
 
-          print ("(" + position.y + ', ' + position.x + ")");
+          print("(" + position.y + ', ' + position.x + ")");
 
           break external;
         } else if (compareColors(pixelColor.color, color(255, 127, 80))) {
           selected = defaults.selected;
 
-          drawAll ();
+          drawAll();
           return;
-        } else if (compareColors (pixelColor.color, posColor3)) {
-          position = new Position (j, i);
-          print ("(" + position.y + ', ' + position.x + ")");
+        } else if (compareColors(pixelColor.color, posColor3)) {
+          position = new Position(j, i);
+          print("(" + position.y + ', ' + position.x + ")");
 
-          var startPos = whatPosition (2, selected);
+          var startPos = whatPosition(2, selected);
 
-          calcMov (startPos, position);
+          calcMov(startPos, position);
 
           selected = defaults.selected;
 
           for (var i = 0; i < jagged; i++) {
 
-            drawAll ();
+            drawAll();
 
-            await sleep (1);
+            await sleep(1);
           }
 
           board[position.y][position.x] = board[startPos.y][startPos.x];
@@ -159,40 +214,28 @@ async function mouseClicked () {
           delete movement.oLocX;
           delete movement.oLocY;
 
-          drawAll ();
+          drawAll();
           return;
-        } else if (compareColors (pixelColor.color, posColor5))
-        {
-          if (selected[i][j] === 2)
-          {
-            selected = defaults.selected;
-            drawAll ();
-            return;
-          } else
-          {
-            position = new Position (i, j);
+        } else if (compareColors(pixelColor.color, posColor4)) {
+          position = new Position(i, j);
+          print("(" + position.y + ', ' + position.x + ")");
 
-            print ("(" + position.y + ', ' + position.x + ")");
+          if (selected[position.y][position.x] > 0) {
 
-            break external;
-          }
-        } else if (compareColors (pixelColor.color, posColor6))
-        {
-          position = new Position (j, i);
+          var startPos = whatPosition(2, selected);
 
-          var startPos = whatPosition (2, selected);
+          calcMov(startPos, position);
 
-          calcMov (startPos, position);
+          print(board[startPos.y][startPos.x]);
+          print(startPos.y);
 
           selected = defaults.selected;
 
-          killedPieces.black.push(board[position.y][position.x]);
-
           for (var i = 0; i < jagged; i++) {
 
-            drawAll ();
+            drawAll();
 
-            await sleep (1);
+            await sleep(1);
           }
 
           board[position.y][position.x] = board[startPos.y][startPos.x];
@@ -201,48 +244,120 @@ async function mouseClicked () {
           delete movement.oLocX;
           delete movement.oLocY;
 
-          drawAll ();
+          drawAll();
+
+          return;
+        } else {
+          selected = defaults.selected;
+          drawAll();
           return;
         }
+      } else if (compareColors(pixelColor.color, posColor5)) {
+        if (selected[i][j] === 2) {
+          selected = defaults.selected;
+          drawAll();
+          return;
+        } else {
+          position = new Position(i, j);
+
+          print("(" + position.y + ', ' + position.x + ")");
+
+          break external;
+        }
+      } else if (compareColors(pixelColor.color, posColor6)) {
+        position = new Position(j, i);
+
+        var startPos = whatPosition(2, selected);
+
+        calcMov(startPos, position);
+
+        selected = defaults.selected;
+
+        killedPieces.black.push(board[position.y][position.x]);
+
+        for (var i = 0; i < jagged; i++) {
+
+          drawAll();
+
+          await sleep(1);
+        }
+
+        board[position.y][position.x] = board[startPos.y][startPos.x];
+        board[startPos.y][startPos.x] = 0;
+
+        delete movement.oLocX;
+        delete movement.oLocY;
+
+        drawAll();
+        return;
+      } else if (compareColors(pixelColor.color, posColor7)) {
+        position = new Position(j, i);
+
+        var startPos = whatPosition(2, selected);
+
+        calcMov(startPos, position);
+
+        selected = defaults.selected;
+
+        killedPieces.black.push(board[position.y][position.x]);
+
+        for (var i = 0; i < jagged; i++) {
+
+          drawAll();
+
+          await sleep(1);
+        }
+
+        board[position.y][position.x] = board[startPos.y][startPos.x];
+        board[startPos.y][startPos.x] = 0;
+
+        delete movement.oLocX;
+        delete movement.oLocY;
+
+        drawAll();
+
+
+        return;
       }
     }
-
-  if (position === null) {
-    console.error ("Position not detected");
-    return;
-  }
-
-  switch (board[position.y][position.x]) {
-    case 0:
-      selected = defaults.selected;
-      break;
-    case 1:
-      selected = possiblePawn (board, position.y, position.x);
-      break;
-    case 2:
-      selected = possibleRook (board, position.y, position.x);
-      break;
-    case 3:
-      selected = possibleKnight (board, position.y, position.x);
-      break;
-    case 4:
-      selected = possibleBishop (board, position.y, position.x);
-      break;
-    case 5:
-      selected = possibleQueen (board, position.y, position.x);
-      break;
-    case 6:
-      selected = possibleKing (board, position.y, position.x);
-      break;
-    default:
-      print ("Huh?! Are you some form of extraterrestrial chess piece? Mr. " + board[position.y][position.x]);
-      break;
-  }
-
-  drawAll();
 }
 
-function calcMov (start, end) {
+if (position === null) {
+  console.error("Position not detected");
+  return;
+}
+
+switch (board[position.y][position.x]) {
+  case 0:
+    selected = defaults.selected;
+    break;
+  case 1:
+    selected = possiblePawn(board, position.y, position.x);
+    break;
+  case 2:
+    selected = possibleRook(board, position.y, position.x);
+    break;
+  case 3:
+    selected = possibleKnight(board, position.y, position.x);
+    break;
+  case 4:
+    selected = possibleBishop(board, position.y, position.x);
+    break;
+  case 5:
+    selected = possibleQueen(board, position.y, position.x);
+    break;
+  case 6:
+    selected = possibleKing(board, position.y, position.x);
+    break;
+  default:
+    print("Huh?! Are you some form of extraterrestrial chess piece? Mr. " + board[position.y][position.x]);
+    break;
+}
+
+drawAll();
+}
+
+function calcMov(start, end) {
 
   var changingY = (end.y - start.y) * tileSize;
   var changingX = (end.x - start.x) * tileSize;
@@ -260,32 +375,58 @@ function calcMov (start, end) {
   movement.y = movement.oY;
 }
 
-function drawBoard (selected) {
+function drawBoard(selected) {
   let isWhiteT = true;
 
   for (var i = 0; i < selected.length; i++) {
     for (var j = 0; j < selected[i].length; j++) {
       if (isWhiteT) {
-        fill (119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
+        fill(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
       } else {
-        fill (105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
+        fill(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
       }
 
-      if (selected[j][i] === 1) {
-        if (board[j][i] > 10) {
-          fill (255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
-        } else {
-          fill (240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
-        }
+      if (selected[j][i] === 3) {
+        fill(86 - subtractColor[j][i], 255 - subtractColor[j][i], 151 - subtractColor[j][i]);
       } else if (selected[j][i] === 2) {
-        fill (255, 127, 80);
-      } else {}
+        fill(255, 127, 80);
+      } else if (selected[j][i] === 1) {
+        if (board[j][i] > 10) {
+          fill(255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
+        } else {
+          fill(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
+        }
+      }
 
-      rect (finalSizeW + tileSize * i, j * tileSize, tileSize, tileSize);
+      if (board[j][i] === 1 && j === 0) {
+        swPawn.sel = true;
+        swPawn.y = j;
+        swPawn.x = i;
+      }
+
+      rect(finalSizeW + tileSize * i, j * tileSize, tileSize, tileSize);
       isWhiteT = !isWhiteT;
     }
 
     isWhiteT = !isWhiteT;
+  }
+
+  if (swPawn.sel) {
+    fill(86, 255, 151);
+    rect(finalSizeW + tileSize / 2, tileSize * 3, tileSize * 7, tileSize * 2);
+
+    tint(255, 255, 255);
+    image(images.queen, finalSizeW + tileSize / 2, tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
+    tint(254, 254, 254);
+    image(images.bishop, finalSizeW + tileSize / 2 + ((tileSize * 7) / 4), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
+    tint(253, 253, 253);
+    image(images.knight, finalSizeW + tileSize / 2 + (((tileSize * 7) / 4) * 2), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
+    tint(252, 252, 252);
+    image(images.rook, finalSizeW + tileSize / 2 + (((tileSize * 7) / 4) * 3), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
   }
 }
 
@@ -299,9 +440,9 @@ function drawPieces() {
       }
 
       if (isNotWhitePiece(board[i][j])) {
-        tint (20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
+        tint(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
       } else if (board[i][j] > 0) {
-        tint (255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
+        tint(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
       }
 
       if (i === movement.oLocY && j === movement.oLocX) {
@@ -318,101 +459,98 @@ function drawPieces() {
       switch (board[i][j]) {
         case 1:
         case 11:
-          image (images.pawn, equX, equY, tileSize, tileSize);
+          image(images.pawn, equX, equY, tileSize, tileSize);
           break;
         case 2:
         case 12:
-          image (images.rook, equX, equY, tileSize, tileSize);
+          image(images.rook, equX, equY, tileSize, tileSize);
           break;
         case 3:
         case 13:
-          image (images.knight, equX, equY, tileSize, tileSize);
+          image(images.knight, equX, equY, tileSize, tileSize);
           break;
         case 4:
         case 14:
-          image (images.bishop, equX, equY, tileSize, tileSize);
+          image(images.bishop, equX, equY, tileSize, tileSize);
           break;
         case 5:
         case 15:
-          image (images.queen, equX, equY, tileSize, tileSize);
+          image(images.queen, equX, equY, tileSize, tileSize);
           break;
         case 6:
         case 16:
-          image (images.king, equX, equY, tileSize, tileSize);
+          image(images.king, equX, equY, tileSize, tileSize);
           break;
       }
     }
   }
 }
 
-function drawKilled ()
-{
-  for (var i = 0; i < killedPieces.white.length; i++)
-  {
+function drawKilled() {
+  for (var i = 0; i < killedPieces.white.length; i++) {
     var size = finalSizeW / 2;
 
     var equX = size * (i % 2);
     var equY = size * (i / 2);
 
-    tint (255 - i, 255 - i, 255 - i);
+    tint(255 - i, 255 - i, 255 - i);
 
     switch (killedPieces.white[i]) {
       case 1:
-        image (images.pawn, equX, equY, size, size);
+        image(images.pawn, equX, equY, size, size);
         break;
       case 2:
-        image (images.rook, equX, equY, size, size);
+        image(images.rook, equX, equY, size, size);
         break;
       case 3:
-        image (images.knight, equX, equY, size, size);
+        image(images.knight, equX, equY, size, size);
         break;
       case 4:
-        image (images.bishop, equX, equY, size, size);
+        image(images.bishop, equX, equY, size, size);
         break;
       case 5:
-        image (images.queen, equX, equY, size, size);
+        image(images.queen, equX, equY, size, size);
         break;
       case 6:
-        image (images.king, equX, equY, size, size);
+        image(images.king, equX, equY, size, size);
         break;
     }
   }
 
-  for (var i = 0; i < killedPieces.black.length; i++)
-  {
+  for (var i = 0; i < killedPieces.black.length; i++) {
     var size = finalSizeW / 2;
 
     var equX = finalSizeW + tileSize * 8 + size * (i % 2);
     var equY = size * (i / 2);
 
 
-    tint (20 + i, 20 + i, 20 + i);
+    tint(20 + i, 20 + i, 20 + i);
 
     switch (killedPieces.black[i]) {
       case 11:
-        image (images.pawn, equX, equY, size, size);
+        image(images.pawn, equX, equY, size, size);
         break;
       case 12:
-        image (images.rook, equX, equY, size, size);
+        image(images.rook, equX, equY, size, size);
         break;
       case 13:
-        image (images.knight, equX, equY, size, size);
+        image(images.knight, equX, equY, size, size);
         break;
       case 14:
-        image (images.bishop, equX, equY, size, size);
+        image(images.bishop, equX, equY, size, size);
         break;
       case 15:
-        image (images.queen, equX, equY, size, size);
+        image(images.queen, equX, equY, size, size);
         break;
       case 16:
-        image (images.king, equX, equY, size, size);
+        image(images.king, equX, equY, size, size);
         break;
     }
   }
 }
 
-function drawAll () {
-  drawBoard (selected);
-  drawPieces ();
-  drawKilled ();
+function drawAll() {
+  drawBoard(selected);
+  drawPieces();
+  drawKilled();
 }

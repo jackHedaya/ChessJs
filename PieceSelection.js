@@ -149,11 +149,21 @@ function possiblePawn(board, y, x) {
   }
 
   if (board[y - 1][x - 1] > 10) {
-    possibleTiles[y - 1][x - 1] = 1;
+    if (y === 1)
+    {
+      possibleTiles[y - 1][x - 1] = 3;
+    } else {
+      possibleTiles[y - 1][x - 1] = 1;
+    }
   }
 
   if (board[y - 1][x + 1] > 10) {
-    possibleTiles[y - 1][x + 1] = 1;
+    if (y === 1)
+    {
+      possibleTiles[y - 1][x + 1] = 3;
+    } else {
+      possibleTiles[y - 1][x + 1] = 1;
+    }
   }
 
   return possibleTiles
