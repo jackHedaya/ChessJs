@@ -124,7 +124,7 @@ async function mouseClicked() {
   var position = null;
 
   if (swPawn.sel) {
-    if (compareColors (pixelColor.color,  color (255, 255, 255)))
+    if (compareColors (pixelColor.color,  color (255, 255, 255)) && mouseY >= tileSize * 3)
     {
       board[swPawn.y][swPawn.x] = Pieces.White.Queen;
 
@@ -134,7 +134,7 @@ async function mouseClicked() {
 
       drawAll();
       return;
-    } else if (compareColors (pixelColor.color,  color (254, 254, 254)))
+    } else if (compareColors (pixelColor.color,  color (254, 254, 254)) && mouseY >= tileSize * 3)
     {
       board[swPawn.y][swPawn.x] = Pieces.White.Bishop;
 
@@ -144,7 +144,7 @@ async function mouseClicked() {
 
       drawAll();
       return;
-    } else if (compareColors (pixelColor.color,  color (253, 253, 253)))
+    } else if (compareColors (pixelColor.color,  color (253, 253, 253)) && mouseY >= tileSize * 3)
     {
       board[swPawn.y][swPawn.x] = Pieces.White.Knight;
 
@@ -154,7 +154,7 @@ async function mouseClicked() {
 
       drawAll();
       return;
-    } else if (compareColors (pixelColor.color,  color (252, 252, 252)))
+    } else if (compareColors (pixelColor.color,  color (252, 252, 252)) && mouseY >= tileSize * 3)
     {
       board[swPawn.y][swPawn.x] = Pieces.White.Rook;
 
@@ -172,15 +172,16 @@ async function mouseClicked() {
   external:
     for (var i = 0; i < board.length; i++) {
       for (var j = 0; j < board[i].length; j++) {
-        let posColor1 = color(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
-        let posColor2 = color(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
-        let posColor3 = color(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
-        let posColor4 = color(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
-        let posColor5 = color(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
-        let posColor6 = color(255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
-        let posColor7 = color(86 - subtractColor[j][i], 255 - subtractColor[j][i], 151 - subtractColor[j][i]);
 
-        if ((compareColors(pixelColor.color, posColor1)) || (compareColors(pixelColor.color, posColor2))) {
+        let blueTileColor = color(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
+        let grayTileColor = color(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
+        let selectColor = color(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
+        let blackColor = color(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
+        let whiteColor = color(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
+        let killColor = color(255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
+        let promotionColor = color(86 - subtractColor[j][i], 255 - subtractColor[j][i], 151 - subtractColor[j][i]);
+
+        if ((compareColors(pixelColor.color, blueTileColor)) || (compareColors(pixelColor.color, grayTileColor))) {
           position = new Position(j, i);
 
           print("(" + position.y + ', ' + position.x + ")");
@@ -191,7 +192,7 @@ async function mouseClicked() {
 
           drawAll();
           return;
-        } else if (compareColors(pixelColor.color, posColor3)) {
+        } else if (compareColors(pixelColor.color, selectColor)) {
           position = new Position(j, i);
           print("(" + position.y + ', ' + position.x + ")");
 
@@ -216,7 +217,7 @@ async function mouseClicked() {
 
           drawAll();
           return;
-        } else if (compareColors(pixelColor.color, posColor4)) {
+        } else if (compareColors(pixelColor.color, blackColor)) {
           position = new Position(i, j);
           print("(" + position.y + ', ' + position.x + ")");
 
@@ -226,9 +227,6 @@ async function mouseClicked() {
 
           calcMov(startPos, position);
 
-          print(board[startPos.y][startPos.x]);
-          print(startPos.y);
-
           selected = defaults.selected;
 
           for (var i = 0; i < jagged; i++) {
@@ -237,6 +235,8 @@ async function mouseClicked() {
 
             await sleep(1);
           }
+
+          killedPieces.black.push(board[position.y][position.x]);
 
           board[position.y][position.x] = board[startPos.y][startPos.x];
           board[startPos.y][startPos.x] = 0;
@@ -252,7 +252,7 @@ async function mouseClicked() {
           drawAll();
           return;
         }
-      } else if (compareColors(pixelColor.color, posColor5)) {
+      } else if (compareColors(pixelColor.color, whiteColor)) {
         if (selected[i][j] === 2) {
           selected = defaults.selected;
           drawAll();
@@ -264,7 +264,7 @@ async function mouseClicked() {
 
           break external;
         }
-      } else if (compareColors(pixelColor.color, posColor6)) {
+      } else if (compareColors(pixelColor.color, killColor)) {
         position = new Position(j, i);
 
         var startPos = whatPosition(2, selected);
@@ -290,7 +290,7 @@ async function mouseClicked() {
 
         drawAll();
         return;
-      } else if (compareColors(pixelColor.color, posColor7)) {
+      } else if (compareColors(pixelColor.color, promotionColor)) {
         position = new Position(j, i);
 
         var startPos = whatPosition(2, selected);
