@@ -72,39 +72,39 @@ var subtractColor = [
 
 var movement = {}
 
-function preload() {
-  images.pawn = loadImage("assets/pieces/Pawn.png");
-  images.rook = loadImage("assets/pieces/Rook.png");
-  images.bishop = loadImage("assets/pieces/Bishop.png");
-  images.knight = loadImage("assets/pieces/Knight.png");
-  images.king = loadImage("assets/pieces/King.png");
-  images.queen = loadImage("assets/pieces/Queen.png");
+function preload () {
+  images.pawn = loadImage ("assets/pieces/Pawn.png");
+  images.rook = loadImage ("assets/pieces/Rook.png");
+  images.bishop = loadImage ("assets/pieces/Bishop.png");
+  images.knight = loadImage ("assets/pieces/Knight.png");
+  images.king = loadImage ("assets/pieces/King.png");
+  images.queen = loadImage ("assets/pieces/Queen.png");
 }
 
-function setup() {
-  var cnv = createCanvas(windowWidth, windowHeight);
+function setup () {
+  var cnv = createCanvas (windowWidth, windowHeight);
 
-  fill('#C7D3FF');
-  rect(0, 0, cnv.width, cnv.height);
+  fill ('#C7D3FF');
+  rect (0, 0, cnv.width, cnv.height);
 
   finalSizeW = (cnv.width - cnv.height) / 2;
   finalSizeH = cnv.height;
 
   tileSize = finalSizeH / 8;
 
-  drawAll();
+  drawAll ();
 }
 
-function draw() {}
+function draw () {}
 
-async function mouseClicked() {
+async function mouseClicked () {
   if (movement.oLocX) {return;}
 
   var pixelColor = {
-    red: get(mouseX, mouseY)[0],
-    green: get(mouseX, mouseY)[1],
-    Blue: get(mouseX, mouseY)[2],
-    color: color(get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
+    red: get (mouseX, mouseY)[0],
+    green: get (mouseX, mouseY)[1],
+    Blue: get (mouseX, mouseY)[2],
+    color: color (get(mouseX, mouseY)[0], get(mouseX, mouseY)[1], get(mouseX, mouseY)[2])
   }
 
   var position = null;
@@ -112,38 +112,38 @@ async function mouseClicked() {
   external:
     for (var i = 0; i < board.length; i++) {
       for (var j = 0; j < board[i].length; j++) {
-        let posColor1 = color(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
-        let posColor2 = color(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
-        let posColor3 = color(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
-        let posColor4 = color(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
-        let posColor5 = color(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
+        let posColor1 = color (119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
+        let posColor2 = color (105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
+        let posColor3 = color (240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
+        let posColor4 = color (20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
+        let posColor5 = color (255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
 
-        if ((compareColors(pixelColor.color, posColor1)) || (compareColors(pixelColor.color, posColor2))) {
-          position = new Position(j, i);
+        if ((compareColors (pixelColor.color, posColor1)) || (compareColors (pixelColor.color, posColor2))) {
+          position = new Position (j, i);
 
-          print("(" + position.y + ', ' + position.x + ")");
+          print ("(" + position.y + ', ' + position.x + ")");
 
           break external;
         } else if (compareColors(pixelColor.color, color(255, 127, 80))) {
           selected = defaults.selected;
 
-          drawAll();
+          drawAll ();
           return;
-        } else if (compareColors(pixelColor.color, posColor3)) {
-          position = new Position(j, i);
-          print("(" + position.y + ', ' + position.x + ")");
+        } else if (compareColors (pixelColor.color, posColor3)) {
+          position = new Position (j, i);
+          print ("(" + position.y + ', ' + position.x + ")");
 
-          var startPos = whatPosition(2, selected);
+          var startPos = whatPosition (2, selected);
 
-          calcMov(startPos, position);
+          calcMov (startPos, position);
 
           selected = defaults.selected;
 
           for (var i = 0; i < jagged; i++) {
 
-            drawAll();
+            drawAll ();
 
-            await sleep(1);
+            await sleep (1);
           }
 
           board[position.y][position.x] = board[startPos.y][startPos.x];
@@ -152,20 +152,20 @@ async function mouseClicked() {
           delete movement.oLocX;
           delete movement.oLocY;
 
-          drawAll();
+          drawAll ();
           return;
-        } else if (compareColors(pixelColor.color, posColor5))
+        } else if (compareColors (pixelColor.color, posColor5))
         {
           if (selected[i][j] === 2)
           {
             selected = defaults.selected;
-            drawAll();
+            drawAll ();
             return;
           } else
           {
-            position = new Position(i, j);
+            position = new Position (i, j);
 
-            print("(" + position.y + ', ' + position.x + ")");
+            print ("(" + position.y + ', ' + position.x + ")");
 
             break external;
           }
@@ -174,7 +174,7 @@ async function mouseClicked() {
     }
 
   if (position === null) {
-    console.error("Position not detected");
+    console.error ("Position not detected");
     return;
   }
 
@@ -183,32 +183,32 @@ async function mouseClicked() {
       selected = defaults.selected;
       break;
     case 1:
-      selected = possiblePawn(board, position.y, position.x);
+      selected = possiblePawn (board, position.y, position.x);
       break;
     case 2:
-      selected = possibleRook(board, position.y, position.x);
+      selected = possibleRook (board, position.y, position.x);
       break;
     case 3:
-      selected = possibleKnight(board, position.y, position.x);
+      selected = possibleKnight (board, position.y, position.x);
       break;
     case 4:
-      selected = possibleBishop(board, position.y, position.x);
+      selected = possibleBishop (board, position.y, position.x);
       break;
     case 5:
-      selected = possibleQueen(board, position.y, position.x);
+      selected = possibleQueen (board, position.y, position.x);
       break;
     case 6:
-      selected = possibleKing(board, position.y, position.x);
+      selected = possibleKing (board, position.y, position.x);
       break;
     default:
-      print("Huh?! Are you some form of extraterrestrial chess piece? Mr. " + board[position.y][position.x]);
+      print ("Huh?! Are you some form of extraterrestrial chess piece? Mr. " + board[position.y][position.x]);
       break;
   }
 
   drawAll();
 }
 
-function calcMov(start, end) {
+function calcMov (start, end) {
 
   var changingY = (end.y - start.y) * tileSize;
   var changingX = (end.x - start.x) * tileSize;
@@ -226,28 +226,28 @@ function calcMov(start, end) {
   movement.y = movement.oY;
 }
 
-function drawBoard(selected) {
+function drawBoard (selected) {
   let isWhiteT = true;
 
   for (var i = 0; i < selected.length; i++) {
     for (var j = 0; j < selected[i].length; j++) {
       if (isWhiteT) {
-        fill(119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
+        fill (119 - subtractColor[j][i], 136 - subtractColor[j][i], 153 - subtractColor[j][i]);
       } else {
-        fill(105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
+        fill (105 - subtractColor[j][i], 105 - subtractColor[j][i], 105 - subtractColor[j][i]);
       }
 
       if (selected[j][i] === 1) {
         if (board[j][i] > 10) {
-          fill(255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
+          fill (255 - subtractColor[j][i], 38 - subtractColor[j][i], 49 - subtractColor[j][i]);
         } else {
-          fill(240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
+          fill (240 - subtractColor[j][i], 230 - subtractColor[j][i], 140 - subtractColor[j][i]);
         }
       } else if (selected[j][i] === 2) {
-        fill(255, 127, 80);
+        fill (255, 127, 80);
       } else {}
 
-      rect(finalSizeW + tileSize * i, j * tileSize, tileSize, tileSize);
+      rect (finalSizeW + tileSize * i, j * tileSize, tileSize, tileSize);
       isWhiteT = !isWhiteT;
     }
 
@@ -265,9 +265,9 @@ function drawPieces() {
       }
 
       if (isNotWhitePiece(board[i][j])) {
-        tint(20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
+        tint (20 + subtractColor[i][j], 20 + subtractColor[i][j], 20 + subtractColor[i][j]);
       } else if (board[i][j] > 0) {
-        tint(255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
+        tint (255 - subtractColor[i][j], 255 - subtractColor[i][j], 255 - subtractColor[i][j]);
       }
 
       if (i === movement.oLocY && j === movement.oLocX) {
@@ -284,34 +284,34 @@ function drawPieces() {
       switch (board[i][j]) {
         case 1:
         case 11:
-          image(images.pawn, equX, equY, tileSize, tileSize);
+          image (images.pawn, equX, equY, tileSize, tileSize);
           break;
         case 2:
         case 12:
-          image(images.rook, equX, equY, tileSize, tileSize);
+          image (images.rook, equX, equY, tileSize, tileSize);
           break;
         case 3:
         case 13:
-          image(images.knight, equX, equY, tileSize, tileSize);
+          image (images.knight, equX, equY, tileSize, tileSize);
           break;
         case 4:
         case 14:
-          image(images.bishop, equX, equY, tileSize, tileSize);
+          image (images.bishop, equX, equY, tileSize, tileSize);
           break;
         case 5:
         case 15:
-          image(images.queen, equX, equY, tileSize, tileSize);
+          image (images.queen, equX, equY, tileSize, tileSize);
           break;
         case 6:
         case 16:
-          image(images.king, equX, equY, tileSize, tileSize);
+          image (images.king, equX, equY, tileSize, tileSize);
           break;
       }
     }
   }
 }
 
-function drawAll() {
-  drawBoard(selected);
-  drawPieces();
+function drawAll () {
+  drawBoard (selected);
+  drawPieces ();
 }
