@@ -287,7 +287,6 @@ function possibleBishop(board, y, x) {
 
   ex:
     while (yEqu >= 0 && yEqu <= 7 && xEqu >= 0) {
-      print(yEqu);
       if (board[yEqu][xEqu] > 10) {
         possibleTiles[yEqu][xEqu] = 1;
         break ex;
