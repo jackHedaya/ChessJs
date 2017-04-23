@@ -68,6 +68,13 @@ var subtractColor = [
   [56, 57, 58, 59, 60, 61, 62, 63],
 ];
 
+var movement = {
+  x: 0,
+  y: 0,
+  locY: null,
+  locX: null
+}
+
 function preload() {
   images.pawn = loadImage("assets/pieces/Pawn.png");
   images.rook = loadImage("assets/pieces/Rook.png");
@@ -80,16 +87,13 @@ function preload() {
 function setup() {
   var cnv = createCanvas(windowWidth, windowHeight);
 
-  fill(254, 254, 254);
+  fill('#C7D3FF');
   rect(0, 0, cnv.width, cnv.height);
 
   finalSizeW = (cnv.width - cnv.height) / 2;
   finalSizeH = cnv.height;
 
   tileSize = finalSizeH / 8;
-
-  fill(random(255), random(255), random(255));
-  rect(finalSizeW, 0, finalSizeH, finalSizeH);
 
   drawAll();
 }
@@ -169,11 +173,16 @@ function mouseClicked() {
       selected = possibleKing(board, position.y, position.x);
       break;
     default:
-      print("Incomplete: " + board[position.y][position.x]);
+      print("Huh?! Are you some form of extraterrestrial chess piece? Mr, " + board[position.y][position.x]);
       break;
   }
 
   drawAll();
+}
+
+function calcMov(start, end)
+{
+    
 }
 
 function drawBoard(selected) {
@@ -208,36 +217,51 @@ function drawBoard(selected) {
 function drawPieces() {
   for (var i = 0; i < board.length; i++) {
     for (var j = 0; j < board[i].length; j++) {
+
+      var adder = {
+        x: 0,
+        y: 0
+      }
+
       if (isNotWhitePiece(board[i][j])) {
         tint(20, 20, 20);
       } else if (board[i][j] > 0) {
         tint(255, 255, 255);
       }
 
+      if (i === movement.locY && j === movement.locX)
+      {
+        adder.x = movement.x;
+        adder.y = movement.y;
+      }
+
+      var equX = finalSizeW + tileSize * j + adder.x;
+      var equY = i * tileSize + adder.y;
+
       switch (board[i][j]) {
         case 1:
         case 11:
-          image(images.pawn, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
+          image(images.pawn, equX, equY, tileSize, tileSize);
           break;
         case 2:
         case 12:
-          image(images.rook, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
+          image(images.rook, equX, equY, tileSize, tileSize);
           break;
         case 3:
         case 13:
-          image(images.knight, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
+          image(images.knight, equX, equY, tileSize, tileSize);
           break;
         case 4:
         case 14:
-          image(images.bishop, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
+          image(images.bishop, equX, equY, tileSize, tileSize);
           break;
         case 5:
         case 15:
-          image(images.queen, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
+          image(images.queen, equX, equY, tileSize, tileSize);
           break;
         case 6:
         case 16:
-          image(images.king, finalSizeW + tileSize * j, i * tileSize, tileSize, tileSize);
+          image(images.king, equX, equY, tileSize, tileSize);
           break;
       }
     }
