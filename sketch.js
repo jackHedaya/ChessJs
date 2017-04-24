@@ -12,6 +12,8 @@ var tileSize;
 
 var jagged = 15;
 
+var cnv;
+
 let swPawn = {
   sel: false
 }
@@ -91,7 +93,7 @@ function preload() {
 }
 
 function setup() {
-  var cnv = createCanvas(windowWidth, windowHeight);
+  cnv = createCanvas(windowWidth, windowHeight);
 
   fill('#C7D3FF');
   rect(0, 0, cnv.width, cnv.height);
@@ -487,8 +489,8 @@ function drawPieces() {
 }
 
 function drawKilled() {
+  var size = cnv.height / 12;
   for (var i = 0; i < killedPieces.white.length; i++) {
-    var size = finalSizeW / 2;
 
     var equX = size * (i % 2);
     var equY = size * (i / 2);
@@ -518,11 +520,9 @@ function drawKilled() {
   }
 
   for (var i = 0; i < killedPieces.black.length; i++) {
-    var size = finalSizeW / 2;
 
     var equX = finalSizeW + tileSize * 8 + size * (i % 2);
     var equY = size * (i / 2);
-
 
     tint(20 + i, 20 + i, 20 + i);
 
