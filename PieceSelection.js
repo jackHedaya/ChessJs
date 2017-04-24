@@ -75,7 +75,7 @@ function possibleKnight(board, y, x) {
 
   possibleTiles[y][x] = 2;
 
-  if (checkForAcceptableValue(y - 2) && checkForAcceptableValue(x - 1)) {
+  if (checkForAcceptableValue(y - 2) && checkForAcceptableValue(x - 1) && y - 2 > -1) {
     if (isNotWhitePiece(board[y - 2][x - 1])) {
       possibleTiles[y - 2][x - 1] = 1;
     }
@@ -87,7 +87,7 @@ function possibleKnight(board, y, x) {
     }
   }
 
-  if (checkForAcceptableValue(y - 2) && checkForAcceptableValue(x + 1)) {
+  if (checkForAcceptableValue(y - 2) && checkForAcceptableValue(x + 1) && y - 2 > -1) {
     if (isNotWhitePiece(board[y - 2][x + 1])) {
       possibleTiles[y - 2][x + 1] = 1;
     }
@@ -111,13 +111,13 @@ function possibleKnight(board, y, x) {
     }
   }
 
-  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x - 2)) {
+  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x - 2) && y - 1 > -1) {
     if (isNotWhitePiece(board[y - 1][x - 2])) {
       possibleTiles[y - 1][x - 2] = 1;
     }
   }
 
-  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x + 2)) {
+  if (checkForAcceptableValue(y - 1) && checkForAcceptableValue(x + 2) && y - 1 > -1) {
     if (isNotWhitePiece(board[y - 1][x + 2])) {
       possibleTiles[y - 1][x + 2] = 1;
     }
