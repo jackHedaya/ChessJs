@@ -1,0 +1,12 @@
+[debug] ----------------------------------------------------------------------
+[debug] Command:      /usr/local/bin/node /usr/local/bin/firebase use --add
+[debug] CLI Version:  3.6.1
+[debug] Platform:     darwin
+[debug] Node Version: v6.10.2
+[debug] Time:         Thu Apr 27 2017 01:22:08 GMT-0400 (EDT)
+[debug] ----------------------------------------------------------------------
+[debug] 
+[debug] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase"]
+[debug] >>> HTTP REQUEST GET https://admin.firebase.com/v1/projects  
+ Thu Apr 27 2017 01:22:08 GMT-0400 (EDT)
+[debug] <<< HTTP RESPONSE 200

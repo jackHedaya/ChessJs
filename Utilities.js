@@ -46,7 +46,7 @@ function checkForAcceptableValue(x)
  * [whatPosition Finds the position of x in arr.]
  * @param  {int} x   [The value that will be searched for.]
  * @param  {int[][]} arr [The array that will be searched.]
- * @return {Position}     [The position in array, arr, of x]
+ * @return {Position}     [The position in array, arr, of x. If x is not found, null is returned.]
  */
 function whatPosition(j, arr)
 {
