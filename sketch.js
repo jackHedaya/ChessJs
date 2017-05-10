@@ -23,7 +23,9 @@ var register = {
   tempPassConf: ""
 }
 
-var bannedWords;
+var menu = {
+  opened: false
+}
 
 var mouseX;
 var mouseY;
@@ -39,7 +41,7 @@ var jagged = 15;
 
 var cnv;
 
-var id;
+var roomID;
 
 var fonts = {}
 
@@ -90,9 +92,9 @@ var defaults = {
   ]
 }
 
-var board;
+var board = defaults.board;
 
-var selected;
+var selected = defaults.selected;
 
 var subtractColor = [
   [0, 1, 2, 3, 4, 5, 6, 7],
@@ -113,8 +115,6 @@ var killedPieces = {
 var movement = {}
 
 function preload() {
-  selected = defaults.selected;
-  board = defaults.board;
 
   images.pawn = loadImage("assets/pieces/Pawn.png");
   images.rook = loadImage("assets/pieces/Rook.png");
@@ -124,6 +124,8 @@ function preload() {
   images.queen = loadImage("assets/pieces/Queen.png");
 
   images.check = loadImage("assets/icons/Check.png");
+  images.x = loadImage("assets/icons/X.png");
+  images.hamburgerBar = loadImage("assets/icons/Hamburger-Bar.png");
 
   fonts.toThePoint = loadFont('assets/fonts/To-The-Point.ttf');
   fonts.adlanta = loadFont('assets/fonts/Adlanta.otf');
@@ -142,8 +144,7 @@ function preload() {
 
   firebase.initializeApp(config);
 
-  var i = generateInstanceID();
-  id = i;
+  roomID = generateInstanceID();
 }
 
 async function setup() {
@@ -193,11 +194,7 @@ function draw() {}
 
 async function mouseClicked() {
 
-  if (movement.oLocX) {
-    return;
-  }
-
-  if (mouseX < finalSizeW || mouseX > finalSizeW + tileSize * 8) {
+  if (movement.oLocX || menu.incrUp || menu.incrDown) {
     return;
   }
 
@@ -209,6 +206,33 @@ async function mouseClicked() {
     var b1 = fonts.vera.textBounds("Log in here", 0, 0, 12);
     var dhx1 = cnv.width / 2 - b.w / 2;
     var dhy1 = (cnv.height / 2 - b.h / 2) + (tileSize * 2);
+
+    if (mouseX > 10 && mouseX < 10 + tileSize / 2 && mouseY > 10 && mouseY < 10 + tileSize / 2)
+    {
+      menu.opened = !menu.opened
+      if (menu.opened)
+      {
+        for (var i = 0; i < finalSizeW + 10 + tileSize / 2; i += 8) {
+          menu.incrUp = i;
+          drawAll();
+
+          await sleep(1);
+        }
+
+        delete menu.incrUp;
+        return;
+      } else {
+        for (var i = finalSizeW + 10 + tileSize / 2; i > 0; i -= 8) {
+          menu.incrDown = i;
+          drawAll();
+
+          await sleep(1);
+        }
+
+        delete menu.incrDown;
+        return;
+      }
+    }
 
     if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > tileSize * 2.5 + tileSize / 4 && mouseY < (tileSize * 2.5 + tileSize / 4) + (tileSize * 2.5, 4 * (tileSize / 10)) && !account.loggedIn && !register.registerNow) {
       account.selectedText = "loginU";
@@ -230,8 +254,8 @@ async function mouseClicked() {
           drawAll();
 
           if (account.savePass) {
-            print(createCookie("username", account.username, 14));
-            print(createCookie("password", account.password, 14));
+            createCookie("username", account.username, 14);
+            createCookie("password", account.password, 14);
           }
         } else {
           textSize(12);
@@ -303,7 +327,6 @@ async function mouseClicked() {
           var encrypted = CryptoJS.AES.encrypt(register.tempPass, "bohemian rhapsody").toString();
 
           firebase.database().ref("accounts/" + register.tempUser).set({
-            id,
             name: register.tempUser,
             password: encrypted
           });
@@ -766,7 +789,7 @@ function drawKilled() {
   var size = cnv.height / 12;
   for (var i = 0; i < killedPieces.white.length; i++) {
 
-    var equX = size * (i % 2);
+    var equX = size * (i % 2) + tileSize;
     var equY = size * (i / 2);
 
     tint(255 - i, 255 - i, 255 - i);
@@ -1080,9 +1103,34 @@ $(document).keydown(function(e) {
   }
 });
 
+function drawMenu()
+{
+  if (menu.opened)
+  {
+    image(images.x, 10, 10, tileSize / 2, tileSize / 2);
+  } else {
+    image(images.hamburgerBar, 10, 10, tileSize / 2, tileSize / 2);
+  }
+
+  if (menu.incrUp)
+  {
+    fill('#ADB0B0');
+    rect(0, 0, menu.incrUp, cnv.height);
+    image(images.x, 10, 10, tileSize / 2, tileSize / 2);
+  } else if (menu.incrDown){
+    fill('#ADB0B0');
+    rect(0, 0, menu.incrDown, cnv.height);
+    image(images.hamburgerBar, 10, 10, tileSize / 2, tileSize / 2);
+  }
+}
+
 function drawAll() {
+  fill('#C7D3FF');
+  rect(0, 0, cnv.width, cnv.height);
+
   drawBoard(selected);
   drawPieces();
   drawKilled();
   drawLogin();
+  drawMenu();
 }
