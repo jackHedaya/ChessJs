@@ -198,6 +198,45 @@ async function mouseClicked() {
     return;
   }
 
+  if (mouseX > 10 && mouseX < 10 + tileSize / 2 && mouseY > 10 && mouseY < 10 + tileSize / 2)
+  {
+    menu.opened = !menu.opened
+    if (menu.opened)
+    {
+      for (var i = 0; i < 2*(finalSizeW + 10 + tileSize / 2); i += 60) {
+        menu.incrUp = i / 2;
+
+        if (i + 60 >= 2*(finalSizeW + 10 + tileSize / 2))
+        {
+          menu.incrUp = finalSizeW + 10 + tileSize / 2;
+        }
+
+        drawAll();
+
+        await sleep(1);
+      }
+
+      delete menu.incrUp;
+      return;
+    } else {
+      for (var i = 2 * (finalSizeW + 10 + tileSize / 2); i > 0; i -= 60) {
+        menu.incrDown = i / 2;
+
+        if (i - 60 <= 0)
+        {
+          menu.incrDown = 0;
+        }
+
+        drawAll();
+
+        await sleep(1);
+      }
+
+      delete menu.incrDown;
+      return;
+    }
+  }
+
   if (!account.loggedIn) {
     var b = fonts.vera.textBounds("Register here", 0, 0, 12);
     var dhx = cnv.width / 2 - b.w / 2;
@@ -206,33 +245,6 @@ async function mouseClicked() {
     var b1 = fonts.vera.textBounds("Log in here", 0, 0, 12);
     var dhx1 = cnv.width / 2 - b.w / 2;
     var dhy1 = (cnv.height / 2 - b.h / 2) + (tileSize * 2);
-
-    if (mouseX > 10 && mouseX < 10 + tileSize / 2 && mouseY > 10 && mouseY < 10 + tileSize / 2)
-    {
-      menu.opened = !menu.opened
-      if (menu.opened)
-      {
-        for (var i = 0; i < finalSizeW + 10 + tileSize / 2; i += 8) {
-          menu.incrUp = i;
-          drawAll();
-
-          await sleep(1);
-        }
-
-        delete menu.incrUp;
-        return;
-      } else {
-        for (var i = finalSizeW + 10 + tileSize / 2; i > 0; i -= 8) {
-          menu.incrDown = i;
-          drawAll();
-
-          await sleep(1);
-        }
-
-        delete menu.incrDown;
-        return;
-      }
-    }
 
     if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > tileSize * 2.5 + tileSize / 4 && mouseY < (tileSize * 2.5 + tileSize / 4) + (tileSize * 2.5, 4 * (tileSize / 10)) && !account.loggedIn && !register.registerNow) {
       account.selectedText = "loginU";
@@ -280,6 +292,13 @@ async function mouseClicked() {
       register.selectedText = "";
       account.selectedText = "";
 
+      register.tempUser = "";
+      register.tempPass = "";
+      register.tempPassConf = "";
+
+      account.tempUser = "";
+      account.tempPass = "";
+
       drawAll();
     } else if (mouseX > dhx1 && mouseX < dhx1 + b.w && mouseY > dhy1 - b.h && mouseY < dhy1 && !account.loggedIn && register.registerNow) {
       register.registerNow = false;
@@ -310,7 +329,6 @@ async function mouseClicked() {
 
     if (mouseX > finalSizeW + (3.45 * tileSize) && mouseX < (finalSizeW + (3.45 * tileSize)) + (tileSize * 1.105) && mouseY > (tileSize * 2.5 + tileSize / 4) + 150 && mouseY < ((tileSize * 2.5 + tileSize / 4) + 150) + (5 * (tileSize / 10)) && !account.loggedIn && register.registerNow) {
 
-      register.coolDown = true;
       var alreadyFound = false;
 
       var accs = [];
@@ -705,24 +723,6 @@ function drawBoard(selected) {
     isWhiteT = !isWhiteT;
   }
 
-  if (swPawn.sel) {
-    fill(86, 255, 151);
-    rect(finalSizeW + tileSize / 2, tileSize * 3, tileSize * 7, tileSize * 2);
-
-    tint(255, 255, 255);
-    image(images.queen, finalSizeW + tileSize / 2, tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
-
-    tint(254, 254, 254);
-    image(images.bishop, finalSizeW + tileSize / 2 + ((tileSize * 7) / 4), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
-
-    tint(253, 253, 253);
-    image(images.knight, finalSizeW + tileSize / 2 + (((tileSize * 7) / 4) * 2), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
-
-    tint(252, 252, 252);
-    image(images.rook, finalSizeW + tileSize / 2 + (((tileSize * 7) / 4) * 3), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
-
-  }
-
   if (!account.loggedIn) {
     fill(100, 100, 100, 100);
     rect(finalSizeW, 0, tileSize * 8, cnv.height);
@@ -843,6 +843,24 @@ function drawKilled() {
         image(images.king, equX, equY, size, size);
         break;
     }
+  }
+
+  if (swPawn.sel) {
+    fill(86, 255, 151);
+    rect(finalSizeW + tileSize / 2, tileSize * 3, tileSize * 7, tileSize * 2);
+
+    tint(255, 255, 255);
+    image(images.queen, finalSizeW + tileSize / 2, tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
+    tint(254, 254, 254);
+    image(images.bishop, finalSizeW + tileSize / 2 + ((tileSize * 7) / 4), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
+    tint(253, 253, 253);
+    image(images.knight, finalSizeW + tileSize / 2 + (((tileSize * 7) / 4) * 2), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
+    tint(252, 252, 252);
+    image(images.rook, finalSizeW + tileSize / 2 + (((tileSize * 7) / 4) * 3), tileSize * 3, (tileSize * 7) / 4, tileSize * 2);
+
   }
 }
 
@@ -1026,6 +1044,10 @@ function drawLogin() {
 $(document).keypress(function(e) {
   var character = String.fromCharCode(e.which);
 
+  if (e.which === 13)
+  {
+    return;
+  }
 
   if (account.selectedText === "loginU") {
     if (account.tempUser.length > 14) {
@@ -1070,6 +1092,8 @@ $(document).keydown(function(e) {
 
       drawAll();
       return;
+    } else if (e.which === 13) {
+
     }
   } else if (account.selectedText === "loginP") {
     if (e.which === 8) {
@@ -1114,11 +1138,11 @@ function drawMenu()
 
   if (menu.incrUp)
   {
-    fill('#ADB0B0');
+    fill('#6A75C2');
     rect(0, 0, menu.incrUp, cnv.height);
     image(images.x, 10, 10, tileSize / 2, tileSize / 2);
   } else if (menu.incrDown){
-    fill('#ADB0B0');
+    fill('#6A75C2');
     rect(0, 0, menu.incrDown, cnv.height);
     image(images.hamburgerBar, 10, 10, tileSize / 2, tileSize / 2);
   }
