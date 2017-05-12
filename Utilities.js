@@ -43,10 +43,10 @@ function checkForAcceptableValue(x)
 }
 
 /**
- * [whatPosition Finds the position of x in arr.]
+ * [whatPosition Finds the position of a variable, x, in an array, arr.]
  * @param  {int} x   [The value that will be searched for.]
  * @param  {int[][]} arr [The array that will be searched.]
- * @return {Position}     [The position in array, arr, of x. If x is not found, null is returned.]
+ * @return {Position}     [The position in array, arr, of variable x. If x is not found, null is returned.]
  */
 function whatPosition(j, arr)
 {
@@ -62,25 +62,6 @@ function whatPosition(j, arr)
   }
 
   return null;
-}
-
-/**
- * [printArray Prints array, arr, sequentially.]
- * @param  {Array} arr [Prints arr.]
- * @return {null}     [Returns nothing.]
- */
-
-function printArray(arr)
-{
-  for (x in arr)
-  {
-    if (x.constructor === Array)
-    {
-      printArray(x);
-    } else {
-      print(x);
-    }
-  }
 }
 
 /**
