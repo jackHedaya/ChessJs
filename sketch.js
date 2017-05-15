@@ -4,11 +4,6 @@ var account = {
   loggedIn: false,
   savePass: false,
 
-  selectedText: "",
-
-  tempUser: "",
-  tempPass: "",
-
   username: "",
   password: ""
 }
@@ -114,6 +109,10 @@ var killedPieces = {
 
 var movement = {}
 
+var buttons = {}
+
+var firstHandler;
+
 function preload() {
 
   images.pawn = loadImage("assets/pieces/Pawn.png");
@@ -170,6 +169,7 @@ async function setup() {
   finalSizeH = cnv.height;
 
   tileSize = finalSizeH / 8;
+  setButtons();
 
   if (readCookie("username") && readCookie("password")) {
     var userCookie = readCookie("username");
@@ -198,19 +198,15 @@ async function mouseClicked() {
     return;
   }
 
-  if (mouseX > 10 && mouseX < 10 + tileSize / 2 && mouseY > 10 && mouseY < 10 + tileSize / 2)
-  {
+  if (mouseX > 10 && mouseX < 10 + tileSize / 2 && mouseY > 10 && mouseY < 10 + tileSize / 2) {
     menu.opened = !menu.opened
-    if (menu.opened)
-    {
-      for (var i = 0; i < 2*(finalSizeW + 10 + tileSize / 2); i += 60) {
-        menu.incrUp = i / 2;
-
-        if (i + 60 >= 2*(finalSizeW + 10 + tileSize / 2))
-        {
+    if (menu.opened) {
+      for (var i = 0; i < 3 * (finalSizeW + 10 + tileSize / 2); i += 90) {
+        if (i + 90 >= 2 * (finalSizeW + 10 + tileSize / 2)) {
           menu.incrUp = finalSizeW + 10 + tileSize / 2;
+        } else {
+          menu.incrUp = i / 3;
         }
-
         drawAll();
 
         await sleep(1);
@@ -219,12 +215,12 @@ async function mouseClicked() {
       delete menu.incrUp;
       return;
     } else {
-      for (var i = 2 * (finalSizeW + 10 + tileSize / 2); i > 0; i -= 60) {
-        menu.incrDown = i / 2;
+      for (var i = 3 * (finalSizeW + 10 + tileSize / 2); i > 0; i -= 90) {
 
-        if (i - 60 <= 0)
-        {
+        if (i - 90 <= 0) {
           menu.incrDown = 0;
+        } else {
+          menu.incrDown = i / 3;
         }
 
         drawAll();
@@ -246,171 +242,51 @@ async function mouseClicked() {
     var dhx1 = cnv.width / 2 - b.w / 2;
     var dhy1 = (cnv.height / 2 - b.h / 2) + (tileSize * 2);
 
-    if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > tileSize * 2.5 + tileSize / 4 && mouseY < (tileSize * 2.5 + tileSize / 4) + (tileSize * 2.5, 4 * (tileSize / 10)) && !account.loggedIn && !register.registerNow) {
-      account.selectedText = "loginU";
+    if (buttons.loginUsername.isInBounds(mouseX, mouseY) && !account.loggedIn && !register.registerNow) {
+      firstHandler = buttons.loginUsername;
+      buttons.loginUsername.handler();
+
       drawLogin();
-    } else if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > (tileSize * 2.5 + tileSize / 4) + 70 && mouseY < ((tileSize * 2.5 + tileSize / 4) + 70) + (4 * (tileSize / 10)) && !account.loggedIn && !register.registerNow) {
-      account.selectedText = "loginP";
+    } else if (buttons.loginPassword.isInBounds(mouseX, mouseY) && !account.loggedIn && !register.registerNow) {
+      firstHandler = buttons.loginPassword;
+
       drawLogin();
-    } else if (mouseX > finalSizeW + (3.5 * tileSize) && mouseX < (finalSizeW + (3.5 * tileSize)) + tileSize * 0.8 && mouseY > (tileSize * 2.5 + tileSize / 2.5) + (tileSize * 1.6) && mouseY < ((tileSize * 2.5 + tileSize / 2.5) + (tileSize * 1.6)) + 4 * (tileSize / 10) && !account.loggedIn && !register.registerNow) {
-      if (!account.tempUser || !account.tempPass) {
-        return;
-      }
+    } else if (buttons.loginButton.isInBounds(mouseX, mouseY) && !account.loggedIn && !register.registerNow) {
+      buttons.loginButton.handler();
+    } else if (buttons.staySignedIn.isInBounds(mouseX, mouseY) && !account.loggedIn && !register.registerNow) {
+      buttons.staySignedIn.handler();
 
-      var r = firebase.database().ref('accounts/' + account.tempUser);
-      r.once('value', function(snapshot) {
-        if (snapshot.val() && CryptoJS.AES.decrypt(snapshot.val().password, "bohemian rhapsody").toString(CryptoJS.enc.Utf8) === account.tempPass) {
-          account.loggedIn = true;
-          account.username = account.tempUser;
-          account.password = CryptoJS.AES.encrypt(account.tempPass, "bohemian rhapsody");
-          drawAll();
-
-          if (account.savePass) {
-            createCookie("username", account.username, 14);
-            createCookie("password", account.password, 14);
-          }
-        } else {
-          textSize(12);
-          fill('red');
-          var b = fonts.vera.textBounds("Invalid username or password", 0, 0, 12);
-          var dhx = cnv.width / 2 - b.w / 2;
-          var dhy = cnv.height / 2 - b.h / 2 + (tileSize * 1.2);
-
-          text("Invalid username or password", dhx, dhy);
-        }
-      });
-    } else if (mouseX > finalSizeW + (2.2 * tileSize) + tileSize * (3 / 4) && mouseY > tileSize * 3.9 + tileSize / 4 && mouseX < (finalSizeW + (2.2 * tileSize) + tileSize * (3 / 4)) + tileSize / 7 && mouseY < (tileSize * 3.9 + tileSize / 4) + tileSize / 7 && !account.loggedIn && !register.registerNow) {
-      if (!account.savePass) {
-        account.savePass = true;
-      } else {
-        account.savePass = false;
-      }
       drawLogin();
-    } else if (mouseX > dhx && mouseX < dhx + b.w && mouseY > dhy - b.h && mouseY < dhy && !account.loggedIn && !register.registerNow) {
-      register.registerNow = true;
+    } else if (buttons.toRegisterPage.isInBounds(mouseX, mouseY) && !account.loggedIn && !register.registerNow) {
+      buttons.toRegisterPage.handler();
 
-      register.selectedText = "";
-      account.selectedText = "";
-
-      register.tempUser = "";
-      register.tempPass = "";
-      register.tempPassConf = "";
-
-      account.tempUser = "";
-      account.tempPass = "";
+      drawLogin();
+    } else if (buttons.toLoginPage.isInBounds(mouseX, mouseY) && !account.loggedIn && register.registerNow) {
+      buttons.toLoginPage.handler();
 
       drawAll();
-    } else if (mouseX > dhx1 && mouseX < dhx1 + b.w && mouseY > dhy1 - b.h && mouseY < dhy1 && !account.loggedIn && register.registerNow) {
-      register.registerNow = false;
+    } else if (buttons.registerUsername.isInBounds(mouseX, mouseY) && !account.loggedIn && register.registerNow) {
+      buttons.registerUsername.handler();
 
-      register.selectedText = "";
-
-      account.selectedText = "";
-
-      drawAll();
-    } else if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > tileSize * 2 + tileSize / 4 && mouseY < (tileSize * 2 + tileSize / 4) + (4 * (tileSize / 10)) && !account.loggedIn && register.registerNow) {
-      register.selectedText = "regU";
       drawLogin();
-    } else if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > (tileSize * 2 + tileSize / 4) + 70 && mouseY < ((tileSize * 2 + tileSize / 4) + 70) + (4 * (tileSize / 10)) && !account.loggedIn && register.registerNow) {
-      register.selectedText = "regP";
+    } else if (buttons.registerPassword.isInBounds(mouseX, mouseY) && !account.loggedIn && register.registerNow) {
+      buttons.registerPassword.handler();
+
       drawLogin();
-    } else if (mouseX > finalSizeW + (2 * tileSize) + tileSize * (3 / 4) && mouseX < (finalSizeW + (2 * tileSize) + tileSize * (3 / 4)) + (tileSize * 2.5) && mouseY > (tileSize * 2 + tileSize / 4) + 140 && mouseY < ((tileSize * 2 + tileSize / 4) + 140) + (4 * (tileSize / 10))) {
-      register.selectedText = "regPConf";
+    } else if (buttons.registerPasswordConf.isInBounds(mouseX, mouseY) && !account.loggedIn && register.registerNow) {
+      buttons.registerPasswordConf.handler();
+
       drawLogin();
     } else {
-      if (register.registerNow) {
-        register.selectedText = "";
-      } else if (!register.registerNow && !account.loggedIn) {
-        account.selectedText = "";
-      }
+      firstHandler = null;
 
       drawLogin();
     }
 
-    if (mouseX > finalSizeW + (3.45 * tileSize) && mouseX < (finalSizeW + (3.45 * tileSize)) + (tileSize * 1.105) && mouseY > (tileSize * 2.5 + tileSize / 4) + 150 && mouseY < ((tileSize * 2.5 + tileSize / 4) + 150) + (5 * (tileSize / 10)) && !account.loggedIn && register.registerNow) {
-
-      var alreadyFound = false;
-
-      var accs = [];
-      var r = firebase.database().ref('accounts');
-      r.once('value', function(snapshot) {
-        for (snap in snapshot.val()) {
-          if (snap === register.tempUser) {
-            alreadyFound = true;
-          }
-        }
-
-        if (!(register.tempUser.includes('.') && register.tempUser.includes('$') && register.tempUser.includes('[') && register.tempUser.includes(']') && register.tempUser.includes('#')) && register.tempUser && register.tempPass === register.tempPassConf && register.tempPass.length > 6 && !alreadyFound) {
-
-          var encrypted = CryptoJS.AES.encrypt(register.tempPass, "bohemian rhapsody").toString();
-
-          firebase.database().ref("accounts/" + register.tempUser).set({
-            name: register.tempUser,
-            password: encrypted
-          });
-
-          register.selectedText = "";
-
-          register.tempUser = "";
-          register.tempPassConf = "";
-          register.tempPass = "";
-
-          register.registerNow = false;
-          drawAll();
-        } else {
-          if (register.tempUser.includes('.') || register.tempUser.includes('$') || register.tempUser.includes('[') || register.tempUser.includes(']') || register.tempUser.includes('#')) {
-            textFont(fonts.adlanta);
-            textSize(11);
-            register.tempUser = "";
-            drawAll();
-            fill('red');
-            text("Username may not contain '.' '$' '[' ']' or '#'", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 45);
-          } else if (register.tempPass !== register.tempPassConf) {
-            textFont(fonts.adlanta);
-            textSize(11);
-            register.tempPassConf = "";
-            register.tempPass = "";
-            drawAll();
-            fill('red');
-            text("Passwords must match", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 115);
-          } else if (register.tempPass.length <= 6) {
-            textFont(fonts.adlanta);
-            textSize(11);
-            register.tempPassConf = "";
-            register.tempPass = "";
-            drawAll();
-            fill('red');
-            text("Password must be > than 6 chars", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 115);
-          } else if (alreadyFound) {
-            textFont(fonts.adlanta);
-            textSize(11);
-            register.tempUser = "";
-            register.tempPass = "";
-            register.tempPassConf = "";
-            drawAll();
-            fill('red');
-            text("Username taken", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 45);
-          } else if (!register.tempUser) {
-            textFont(fonts.adlanta);
-            textSize(11);
-            register.tempUser = "";
-            register.tempPass = "";
-            register.tempPassConf = "";
-            drawAll();
-            fill('red');
-            text("Username cannot be empty", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 45);
-          } else {
-            textFont(fonts.adlanta);
-            textSize(11);
-            register.tempPassConf = "";
-            register.tempPass = "";
-            drawAll();
-            fill('red');
-            text("An unknown error occured", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 115);
-          }
-        }
-      });
+    if (buttons.registerButton.isInBounds(mouseX, mouseY) && !account.loggedIn && register.registerNow) {
+      buttons.registerButton.handler();
     }
+
     return;
   }
 
@@ -875,72 +751,33 @@ function drawLogin() {
     textSize(30);
     text("Username", finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 1, (tileSize * 2.5 + tileSize / 4) - 5);
 
-    if (account.selectedText === "loginU") {
-      fill('#888888');
-    }
-
-    rect(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), tileSize * 2.5 + tileSize / 4, tileSize * 2.5, 4 * (tileSize / 10));
-
-    fill('black');
-    textSize(20);
-    textFont(fonts.vera);
-    text(account.tempUser, finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 4, (tileSize * 2.5 + tileSize / 4) + (4 * (tileSize / 10)) - 8);
+    buttons.loginUsername.draw();
 
     fill('white');
     textSize(30);
     textFont(fonts.toThePoint);
     text("Password", finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 1, (tileSize * 2.5 + tileSize / 4) + 65);
 
-    if (account.selectedText === "loginP") {
-      fill('#888888');
-    }
+    buttons.loginPassword.passwordText = true;
+    buttons.loginPassword.draw();
 
-    rect(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2.5 + tileSize / 4) + 70, tileSize * 2.5, 4 * (tileSize / 10));
-
-    fill('black');
-    textSize(50);
-    textFont(fonts.toThePoint);
-
-    var stars = "";
-
-    for (var i = 0; i < account.tempPass.length; i++) {
-      stars += "*";
-    }
-
-    text(stars, finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 2, (tileSize * 2.5 + tileSize / 4) + (4 * (tileSize / 10)) + 69);
-
-    fill('#6F6DC5');
-    textSize(25);
-    textFont(fonts.vera);
-    rect(finalSizeW + (3.5 * tileSize), (tileSize * 2.5 + tileSize / 2.5) + (tileSize * 1.6), tileSize * 0.8, 4 * (tileSize / 10));
-
-    textFont(fonts.vegur);
-    fill('white');
-    text("Login", finalSizeW + (3.5 * tileSize) + tileSize * 0.1, (tileSize * 2.5 + tileSize / 2.5) + (tileSize * 1.5) + 4 * (tileSize / 10));
-
-    fill('black');
-    textFont(fonts.vera);
-    textSize(12);
+    buttons.loginButton.textColor = color('white');
+    buttons.loginButton.buttonColor = color('#6F6DC5');
+    buttons.loginButton.draw();
 
     var b = fonts.vera.textBounds("Don't have an account?", 0, 0, 12);
     var dhx = cnv.width / 2 - b.w / 2;
     var dhy = cnv.height / 2 - b.h / 2;
 
+    textFont(fonts.vera);
+    fill('#888888');
+    textSize(12);
     text("Don't have an account?", dhx, dhy + (tileSize * 1.45));
 
-    fill('#0479FB');
+    buttons.toRegisterPage.textColor = color('#0479FB');
+    buttons.toRegisterPage.draw();
 
-    var b = fonts.vera.textBounds("Register here", 0, 0, 12);
-    var dhx = cnv.width / 2 - b.w / 2;
-    var dhy = cnv.height / 2 - b.h / 2;
-
-    text("Register here", dhx, dhy + (tileSize * 1.7));
-
-    fill('white');
-    rect(finalSizeW + (2.2 * tileSize) + tileSize * (3 / 4), tileSize * 3.9 + tileSize / 4, tileSize / 7, tileSize / 7);
-
-    if (account.savePass)
-      image(images.check, finalSizeW + (2.2 * tileSize) + tileSize * (3 / 4), tileSize * 3.9 + tileSize / 4, tileSize / 7, tileSize / 7);
+    buttons.staySignedIn.draw();
 
     fill('gray');
     text("Stay signed in", finalSizeW + (2.2 * tileSize) + tileSize * (3 / 4) + (tileSize / 5), tileSize * 3.9 + tileSize / 4 + tileSize / 8);
@@ -955,73 +792,29 @@ function drawLogin() {
     textSize(30);
     text("Username", finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 1, (tileSize * 2 + tileSize / 4) - 5);
 
-    if (register.selectedText === "regU") {
-      fill('#888888');
-    }
-
-    rect(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), tileSize * 2 + tileSize / 4, tileSize * 2.5, 4 * (tileSize / 10));
-
-    fill('black');
-    textSize(20);
-    textFont(fonts.vera);
-    text(register.tempUser, finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 4, (tileSize * 2.3 + tileSize / 4) + (1 * (tileSize / 10)) - 8);
+    buttons.registerUsername.draw();
 
     fill('white');
     textSize(30);
     textFont(fonts.toThePoint);
     text("Password", finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 1, (tileSize * 2 + tileSize / 4) + 65);
 
-    if (register.selectedText === "regP") {
-      fill('#888888');
-    }
-
-    rect(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 70, tileSize * 2.5, 4 * (tileSize / 10));
-
-    fill('black');
-    textSize(50);
-    textFont(fonts.toThePoint);
-
-    var stars = "";
-
-    for (var i = 0; i < register.tempPass.length; i++) {
-      stars += "*";
-    }
-
-    text(stars, finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 2, (tileSize * 2 + tileSize / 4) + (4 * (tileSize / 10)) + 69);
+    buttons.registerPassword.passwordText = true;
+    buttons.registerPassword.draw();
 
     fill('white');
     textSize(30);
     textFont(fonts.toThePoint);
     text("Confirm Password", finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 1, (tileSize * 2 + tileSize / 4) + 135);
 
-    if (register.selectedText === "regPConf") {
-      fill('#888888');
-    }
+    buttons.registerPasswordConf.passwordText = true;
+    buttons.registerPasswordConf.draw();
 
-    rect(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 140, tileSize * 2.5, 4 * (tileSize / 10));
+    buttons.registerButton.buttonColor = color('#6F6DC5');
+    buttons.registerButton.textColor = color('white');
+    buttons.registerButton.draw();
 
-    fill('black');
-    textSize(50);
-    textFont(fonts.toThePoint);
-
-    var stars = "";
-
-    for (var i = 0; i < register.tempPassConf.length; i++) {
-      stars += "*";
-    }
-
-    text(stars, finalSizeW + (2 * tileSize) + tileSize * (3 / 4) + 2, (tileSize * 2 + tileSize / 4) + (4 * (tileSize / 10)) + 139);
-
-    fill('#6F6DC5');
-    textSize(25);
-    textFont(fonts.vera);
-    rect(finalSizeW + (3.45 * tileSize), (tileSize * 2.5 + tileSize / 4) + 150, tileSize * 1.105, 5 * (tileSize / 10));
-
-    textFont(fonts.vegur);
-    fill('white');
-    text("Register", finalSizeW + (3.4 * tileSize) + 10, (tileSize * 2.5 + tileSize / 4) + 125 + 6.5 * (tileSize / 10));
-
-    fill('black');
+    fill('#888888');
     textFont(fonts.vera);
     textSize(12);
 
@@ -1031,121 +824,214 @@ function drawLogin() {
 
     text("Already have an account?", dhx, dhy + (tileSize * 1.75));
 
-    fill('#0479FB');
-
-    var b = fonts.vera.textBounds("Log in here", 0, 0, 12);
-    var dhx = cnv.width / 2 - b.w / 2;
-    var dhy = (cnv.height / 2 - b.h / 2) + (tileSize * 2);
-
-    text("Log in here", dhx, dhy);
+    buttons.toLoginPage.textColor = color('#0479FB');
+    buttons.toLoginPage.draw();
   }
 }
 
 $(document).keypress(function(e) {
   var character = String.fromCharCode(e.which);
 
-  if (e.which === 13)
-  {
+  if (e.which === 13) {
     return;
   }
 
-  if (account.selectedText === "loginU") {
-    if (account.tempUser.length > 14) {
-      return;
-    }
-    if (character === " ")
-      account.tempUser += "_";
-    else
-      account.tempUser += character;
-  } else if (account.selectedText === "loginP") {
-    if (account.tempPass.length > 14) {
-      return;
-    }
-    account.tempPass += character;
-  } else if (register.selectedText === "regU") {
-    if (register.tempUser.length > 14) {
-      return;
-    }
-    if (character === " ")
-      register.tempUser += "_";
-    else
-      register.tempUser += character;
-  } else if (register.selectedText === "regP") {
-    if (register.tempPass.length > 14) {
-      return;
-    }
-    register.tempPass += character;
-  } else if (register.selectedText === "regPConf") {
-    if (register.tempPassConf.length > 14) {
-      return;
-    }
-    register.tempPassConf += character;
+  if (acceptableSize(buttons.loginUsername, 14) || acceptableSize(buttons.loginPassword, 14) || acceptableSize(buttons.registerUsername, 14) || acceptableSize(buttons.registerPassword, 14) || acceptableSize(buttons.registerPasswordConf, 14)) {
+    return;
   }
 
+  if (character === " ") {
+    character = "_";
+  }
+
+  firstHandler.text += character;
   drawAll();
 });
 
 $(document).keydown(function(e) {
-  if (account.selectedText === "loginU") {
-    if (e.which === 8) {
-      account.tempUser = account.tempUser.substr(0, account.tempUser.length - 1);
-
-      drawAll();
-      return;
-    } else if (e.which === 13) {
-
-    }
-  } else if (account.selectedText === "loginP") {
-    if (e.which === 8) {
-      account.tempPass = account.tempPass.substr(0, account.tempPass.length - 1);
-
-      drawAll();
-      return;
-    }
+  if (!firstHandler) {
+    return;
   }
-  if (register.selectedText === "regU") {
-    if (e.which === 8) {
-      register.tempUser = register.tempUser.substr(0, register.tempUser.length - 1);
 
-      drawAll();
-      return;
-    }
-  } else if (register.selectedText === "regP") {
-    if (e.which === 8) {
-      register.tempPass = register.tempPass.substr(0, register.tempPass.length - 1);
-
-      drawAll();
-      return;
-    }
-  } else if (register.selectedText === "regPConf") {
-    if (e.which === 8) {
-      register.tempPassConf = register.tempPassConf.substr(0, register.tempPassConf.length - 1);
-
-      drawAll();
-      return;
-    }
+  if (e.which === 8) {
+    firstHandler.text = firstHandler.text.substr(0, firstHandler.text.length - 1);
   }
+
+  drawLogin();
 });
 
-function drawMenu()
-{
-  if (menu.opened)
-  {
+function drawMenu() {
+  if (menu.opened) {
     image(images.x, 10, 10, tileSize / 2, tileSize / 2);
   } else {
     image(images.hamburgerBar, 10, 10, tileSize / 2, tileSize / 2);
   }
 
-  if (menu.incrUp)
-  {
-    fill('#6A75C2');
+  if (menu.incrUp) {
+    fill('rgba(106,117,194, 0.9)');
     rect(0, 0, menu.incrUp, cnv.height);
     image(images.x, 10, 10, tileSize / 2, tileSize / 2);
-  } else if (menu.incrDown){
-    fill('#6A75C2');
+  } else if (menu.incrDown) {
+    fill('rgba(106,117,194, 0.9)');
     rect(0, 0, menu.incrDown, cnv.height);
     image(images.hamburgerBar, 10, 10, tileSize / 2, tileSize / 2);
+  } else {
+    if (menu.opened && menu.incrUp !== 0) {
+      fill('rgba(106,117,194, 0.9)');
+      rect(0, 0, finalSizeW + 10 + tileSize / 2, cnv.height);
+      image(images.x, 10, 10, tileSize / 2, tileSize / 2);
+    }
   }
+}
+
+async function setButtons() {
+  buttons.loginUsername = new TextField(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), tileSize * 2.5 + tileSize / 4, tileSize * 2.5, 4 * (tileSize / 10));
+  buttons.loginPassword = new TextField(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2.5 + tileSize / 4) + 70, tileSize * 2.5, 4 * (tileSize / 10));
+
+  buttons.staySignedIn = new CheckBox(finalSizeW + (2.2 * tileSize) + tileSize * (3 / 4), tileSize * 3.9 + tileSize / 4);
+  buttons.loginButton = new TextButton("Login", finalSizeW + (3.5 * tileSize), (tileSize * 2.5 + tileSize / 2.5) + (tileSize * 1.6), tileSize * 0.8, 4 * (tileSize / 10), function() {
+    if (!buttons.loginUsername.text || !buttons.loginPassword.text) {
+      return;
+    }
+
+    var r = firebase.database().ref('accounts/' + buttons.loginUsername.text);
+    r.once('value', function(snapshot) {
+      if (snapshot.val() && CryptoJS.AES.decrypt(snapshot.val().password, "bohemian rhapsody").toString(CryptoJS.enc.Utf8) === buttons.loginPassword.text) {
+        account.loggedIn = true;
+        account.username = buttons.loginUsername.text;
+        account.password = CryptoJS.AES.encrypt(buttons.loginPassword.text, "bohemian rhapsody");
+        drawAll();
+
+        if (buttons.staySignedIn.checked) {
+          createCookie("username", account.username, 14);
+          createCookie("password", account.password, 14);
+        }
+      } else {
+        textSize(12);
+        fill('red');
+        var b = fonts.vera.textBounds("Invalid username or password", 0, 0, 12);
+        var dhx = cnv.width / 2 - b.w / 2;
+        var dhy = cnv.height / 2 - b.h / 2 + (tileSize * 1.2);
+
+        text("Invalid username or password", dhx, dhy);
+      }
+    });
+  });
+
+  buttons.toRegisterPage = new LabelButton("Register Here", cnv.width / 2 - fonts.vera.textBounds("Register here", 0, 0, 12).w / 2, cnv.height / 2 - fonts.vera.textBounds("Register here", 0, 0, 12).h / 2 + (tileSize * 1.7), function() {
+    register.registerNow = true;
+
+    buttons.loginUsername.text = "";
+    buttons.loginPassword.text = "";
+  });
+
+  buttons.registerUsername = new TextField(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), tileSize * 2 + tileSize / 4, tileSize * 2.5, 4 * (tileSize / 10));
+  buttons.registerPassword = new TextField(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 70, tileSize * 2.5, 4 * (tileSize / 10));
+  buttons.registerPasswordConf = new TextField(finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 140, tileSize * 2.5, 4 * (tileSize / 10));
+
+  buttons.registerButton = new TextButton("Register", finalSizeW + (3.45 * tileSize), (tileSize * 2.5 + tileSize / 4) + 150, tileSize * 1.105, 5 * (tileSize / 10), function() {
+    var alreadyFound = false;
+
+    var accs = [];
+    var r = firebase.database().ref('accounts');
+
+    r.once('value', function(snapshot) {
+      for (snap in snapshot.val()) {
+        if (snap === buttons.registerUsername.text) {
+          alreadyFound = true;
+        }
+      }
+
+      if (!(buttons.registerUsername.text.includes('.') && buttons.registerUsername.text.includes('$') && buttons.registerUsername.text.includes('[') && buttons.registerUsername.text.includes(']') && buttons.registerUsername.text.includes('#')) && buttons.registerUsername.text && buttons.registerPassword.text === buttons.registerPasswordConf && buttons.registerPassword.text.length > 6 && !alreadyFound) {
+
+        var encrypted = CryptoJS.AES.encrypt(buttons.registerPassword.text, "bohemian rhapsody").toString();
+
+        firebase.database().ref("accounts/" + buttons.registerUsername.text).set({
+          name: buttons.registerUsername.text,
+          password: encrypted
+        });
+
+        firstHandler = null;
+
+        buttons.registerUsername.text = "";
+        buttons.registerPasswordConf.text = "";
+        buttons.registerPassword.text = "";
+
+        register.registerNow = false;
+        drawAll();
+      } else {
+        if (buttons.registerUsername.text.includes('.') || buttons.registerUsername.text.includes('$') || buttons.registerUsername.text.includes('[') || buttons.registerUsername.text.includes(']') || buttons.registerUsername.text.includes('#')) {
+          textFont(fonts.adlanta);
+          textSize(11);
+
+          buttons.registerUsername.text = "";
+
+          drawAll();
+          fill('red');
+          text("Username may not contain '.' '$' '[' ']' or '#'", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 45);
+        } else if (buttons.registerPassword.text !== buttons.registerPasswordConf) {
+          textFont(fonts.adlanta);
+          textSize(11);
+
+          buttons.registerPasswordConf.text = "";
+          buttons.registerPassword.text = "";
+
+          drawAll();
+          fill('red');
+          text("Passwords must match", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 115);
+        } else if (buttons.registerPassword.text.length <= 6) {
+          textFont(fonts.adlanta);
+          textSize(11);
+
+          buttons.registerPasswordConf.text = "";
+          buttons.registerPassword.text = "";
+
+          drawAll();
+          fill('red');
+          text("Password must be > than 6 chars", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + tileSize);
+        } else if (alreadyFound) {
+          textFont(fonts.adlanta);
+          textSize(11);
+
+          buttons.registerUsername.text = "";
+          buttons.registerPasswordConf.text = "";
+          buttons.registerPassword.text = "";
+
+          drawAll();
+          fill('red');
+          text("Username taken", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 45);
+        } else if (!buttons.registerUsername.text) {
+          textFont(fonts.adlanta);
+          textSize(11);
+          buttons.registerUsername.text = "";
+          buttons.registerPasswordConf.text = "";
+          buttons.registerPassword.text = "";
+          drawAll();
+          fill('red');
+          text("Username cannot be empty", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 45);
+        } else {
+          textFont(fonts.adlanta);
+          textSize(11);
+
+          buttons.registerPasswordConf.text = "";
+          buttons.registerPassword.text = "";
+
+          drawAll();
+          fill('red');
+          text("An unknown error occured", finalSizeW + (2 * tileSize) + tileSize * (3 / 4), (tileSize * 2 + tileSize / 4) + 115);
+        }
+      }
+    });
+  });
+
+  buttons.toLoginPage = new LabelButton("Log in here", cnv.width / 2 - fonts.vera.textBounds("Log in here", 0, 0, 12).w / 2, (cnv.height / 2 - fonts.vera.textBounds("Log in here", 0, 0, 12).h / 2) + (tileSize * 2), function() {
+    register.registerNow = false;
+
+    buttons.registerUsername.text = "";
+    buttons.registerPassword.text = "";
+    buttons.registerPasswordConf.text = "";
+    firstHandler = null;
+  });
 }
 
 function drawAll() {

@@ -98,3 +98,15 @@ function combineBoards(board1, board2)
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
+
+/**
+ * [acceptableSize Checks whether textfield, field, is the current firstHandler and has less characters than size, size.]
+ * @param  {TextField} field [The textfield that will be checked.]
+ * @param  {int} size  [The number to check if textfield's, field, amount of characters is less.]
+ * @return {boolean}       [Whether or not textfield, field, is the current firstHandler and has less characters than size, size.]
+ */
+
+function acceptableSize(field, size)
+{
+  return Object.is(firstHandler, field) && field.text.length > size;
+}
