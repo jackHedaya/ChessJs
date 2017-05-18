@@ -33,6 +33,8 @@ class Button {
 
     this.handler = handler;
     this.buttonColor = color('white');
+
+    this.hidden = false;
   }
 
   isInBounds(bX, bY)
@@ -42,8 +44,11 @@ class Button {
 
   draw()
   {
-    fill(this.buttonColor);
-    rect(this.x, this.y, this.w, this.h);
+    if (!this.hidden)
+    {
+      fill(this.buttonColor);
+      rect(this.x, this.y, this.w, this.h);
+    }
   }
 }
 
@@ -63,11 +68,14 @@ class TextButton extends Button
   {
     super.draw();
 
-    fill(this.textColor);
-    textFont(this.font);
-    textSize(this.fontSize);
+    if (!this.hidden)
+    {
+      fill(this.textColor);
+      textFont(this.font);
+      textSize(this.fontSize);
 
-    text(this.text, this.x + this.w * (1 / 13), this.y + this.h * (3 / 4));
+      text(this.text, this.x + (this.w - this.font.textBounds(this.text, 0, 0, 25).w) / 2, this.y + this.h * (3 / 4));
+    }
   }
 }
 
@@ -82,6 +90,8 @@ class LabelButton
     this.font = fonts.vera;
     this.fontSize = 12;
     this.textColor = color('black');
+    this.hidden = false;
+    this.textAlign = LEFT;
   }
 
   isInBounds(bX, bY)
@@ -92,11 +102,17 @@ class LabelButton
 
   draw()
   {
-    fill(this.textColor);
-    textFont(this.font);
-    textSize(this.fontSize);
+    if (!this.hidden)
+    {
+      textAlign(this.textAlign);
+      fill(this.textColor);
+      textFont(this.font);
+      textSize(this.fontSize);
 
-    text(this.text, this.x, this.y);
+      text(this.text, this.x, this.y);
+
+      textAlign(LEFT);
+    }
   }
 }
 
@@ -120,31 +136,34 @@ class TextField extends Button
 
   draw()
   {
-    if (Object.is(firstHandler, this))
+    if (!this.hidden)
     {
-      this.buttonColor = color('#888888');
-    } else {
-      this.buttonColor = color('white');
-    }
-
-    super.draw();
-
-    fill(this.textColor);
-    textFont(this.font);
-    textSize(this.fontSize);
-
-    if (this.passwordText)
-    {
-      var stars = "";
-
-      for (var i = 0; i < this.text.length; i++)
+      if (Object.is(firstHandler, this))
       {
-          stars += "*";
+        this.buttonColor = color('#888888');
+      } else {
+        this.buttonColor = color('white');
       }
 
-      text(stars, this.x + (this.w / 40), this.y + this.h * (3 / 4));
-    } else {
-      text(this.text, this.x + (this.w / 40), this.y + this.h * (3 / 4));
+      super.draw();
+
+      fill(this.textColor);
+      textFont(this.font);
+      textSize(this.fontSize);
+
+      if (this.passwordText)
+      {
+        var stars = "";
+
+        for (var i = 0; i < this.text.length; i++)
+        {
+            stars += "*";
+        }
+
+        text(stars, this.x + (this.w / 40), this.y + this.h * (3 / 4));
+      } else {
+        text(this.text, this.x + (this.w / 40), this.y + this.h * (3 / 4));
+      }
     }
   }
 }
@@ -168,7 +187,7 @@ class CheckBox extends Button
   {
     super.draw();
 
-    if(this.checked)
+    if(this.checked && !this.hidden)
       image(images.check, this.x, this.y, this.w, this.h);
   }
 }
@@ -183,6 +202,7 @@ class ImageButton
     this.y = y;
     this.w = w;
     this.h = h;
+    this.hidden = false;
   }
 
   isInBounds(bX, bY)
@@ -192,6 +212,7 @@ class ImageButton
 
   draw()
   {
-    image(this.image, this.x, this.y, this.w, this.h);
+    if (!this.hidden)
+      image(this.image, this.x, this.y, this.w, this.h);
   }
 }
