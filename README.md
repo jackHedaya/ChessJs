@@ -8,6 +8,7 @@ Using p5 ended up being a mistake because due to lag the project came to a close
 Completed:
 - Pieces were almost completely functional.
 - Selection and movement of pieces.
+- Animated piece movement.
 - Killed pieces shown on the side.
 - Creating an account that is connected to Firebase.
 - Account password encrypted using AES-256 (CryptoJs).
